@@ -1,66 +1,46 @@
-import * as React from "react";
-import { Action, Reducer, Store } from "reactive-state";
+import * as React from "react"
+import { Action, Reducer, Store } from "reactive-state"
+import CounterComponent from "./CounterComponent";
 
-import { Observable } from "rxjs/Rx";
+import { connect } from "../reactive-state-react"
 
 export interface CounterModuleProps {
-    store: Store<any>
+    store: Store<CounterModuleState>
 }
 
 export interface CounterModuleState {
-    counter: number;
+    counter: number
 }
 
-export interface ICounterState {
-    counter: number;
+const incrementAction = new Action<void>("COUNTER_INCREMENT")
+const decrementAction = new Action<void>("COUNTER_DECREMENT")
+
+const incrementReducer: Reducer<CounterModuleState> = (state) => ({ ...state, counter: state.counter + 1 })
+const decrementReducer: Reducer<CounterModuleState> = (state) => ({ ...state, counter: state.counter - 1 })
+
+const mapStateToProps = (state: CounterModuleState) => state;
+
+const mapDispatchToProps = {
+    increment: () => incrementAction.next(),
+    decrement: () => decrementAction.next(),
 }
 
-export const initialCounterState: ICounterState = {
-    counter: 0
-}
+export class CounterModule extends React.Component<CounterModuleProps, {}> {
 
-const incrementAction = new Action<void>("COUNTER_INCREMENT");
-const decrementAction = new Action<void>("COUNTER_DECREMENT");
+    // TODO: eliminate any
+    private ConnectedCounterComponent: any;
 
-const incrementReducer: Reducer<number> = (state) => state + 1;
-const decrementReducer: Reducer<number> = (state) => state - 1;
+    componentWillMount() {
 
-function connect<T>(obs: Observable<T>, component: React.Component<any, T>) {
-    obs.subscribe(t => {
-        component.setState(t);
-    });
-}
+        // const mapDispatchToProps = { increment, decrement };
+        this.ConnectedCounterComponent = connect(CounterComponent, this.props.store, mapStateToProps, mapDispatchToProps)
 
-export class CounterModule extends React.Component<CounterModuleProps, CounterModuleState> {
-
-    private store: Store<number>;
-
-    state = {
-        counter: 0
-    }
-
-    componentDidMount() {
-        const initialState = 0;
-        this.store = this.props.store.createSlice<number>('counter', initialState);
-
-        this.store.addReducer(incrementAction, incrementReducer);
-        this.store.addReducer(decrementAction, decrementReducer);
-
-        this.store.select(s => s).subscribe(counter => this.setState(({ counter })));
-        // connect(this.store.select(s => s), this);
-
-        Observable.timer(0, 5000).subscribe(n => incrementAction.next());
-
-    }
-
-    componentWillUnmount() {
-        this.store.destroy();
-        this.store = undefined;
+        this.props.store.addReducer(incrementAction, incrementReducer)
+        this.props.store.addReducer(decrementAction, decrementReducer)
     }
 
     render() {
-        return (<div>
-            <input type="text" value={this.state.counter} />
-        </div>)
+        const { ConnectedCounterComponent } = this;
+        return <ConnectedCounterComponent />
     }
 }

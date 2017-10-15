@@ -1,4 +1,5 @@
-wwwroot/
+wwwroot/*.js
+
 dist/
 node_modules/
 

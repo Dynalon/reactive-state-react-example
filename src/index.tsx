@@ -3,20 +3,22 @@ import { HashRouter as Router, Route, withRouter } from "react-router-dom";
 import { render } from "react-dom";
 import { Store } from 'reactive-state';
 
-import { CounterModule, ICounterState } from "./counter/index";
+import { CounterModule, CounterModuleState } from "./counter/index";
 // import { TodoModule } from "./todo/index";
 
-const appState: any = {};
+const appState: CounterModuleState = {
+    counter: 0
+};
 
 export class AppRoot extends React.Component<{}, {}> {
 
     store: Store<typeof appState>;
 
-    constructor(props) {
+    constructor(props: {}) {
         super(props)
         this.store = Store.create(appState);
 
-        this.store.select(state => state, true).subscribe(state => console.log(state));
+        this.store.select(state => state, true).subscribe(state => console.log("STATE CHANGE", state));
     }
 
     render() {
