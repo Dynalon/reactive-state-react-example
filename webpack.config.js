@@ -1,9 +1,10 @@
 var path = require('path');
+const { CheckerPlugin } = require('awesome-typescript-loader')
 
 module.exports = {
-    entry: "./dist/index",
+    entry: "./src/index",
     output: {
-        path: path.resolve(__dirname, "wwwroot/bundles/"),
+        path: path.resolve(__dirname, "wwwroot/"),
         filename: "app.js",
         library: "App",
         libraryTarget: "umd"
@@ -12,17 +13,29 @@ module.exports = {
         modules: [
             "node_modules"
         ],
-        extensions: [".ts", ".js"],
+        extensions: [".ts", ".tsx", ".js", ".jsx"],
     },
     module: {
         loaders: [
+            {
+                test: /\.tsx?$/,
+                loader: "awesome-typescript-loader"
+            }
         ]
     },
     plugins: [
+        new CheckerPlugin()
     ],
     node: {
         Buffer: false
     },
+    devtool: "source-map",
     context: __dirname,
-    target: "web"
+    target: "web",
+
+    devServer: {
+        contentBase: path.join(__dirname, "wwwroot"),
+        compress: true,
+        port: 8080
+    }
 }

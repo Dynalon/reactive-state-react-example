@@ -4,8 +4,8 @@
   "description": "A simple counter/ToDo app to showcase reactive-state using React and dynamic module loading",
   "main": "index.js",
   "scripts": {
-    "develop": "concurrently \"tsc -w \" \"webpack -w\"",
-    "build": "tsc && webpack"
+    "develop": "webpack-dev-server --open --no-info",
+    "build": "webpack"
   },
   "author": "Timo Dörr",
   "license": "MIT",
@@ -14,11 +14,11 @@
     "@types/react-dom": "^16.0.1",
     "@types/react-router": "^4.0.15",
     "@types/react-router-dom": "^4.0.8",
-    "concurrently": "^3.5.0",
+    "awesome-typescript-loader": "^3.2.3",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-router-dom": "^4.2.2",
-    "reactive-state": "^0.2.0",
+    "reactive-state": "^0.2.2",
     "rxjs": "^5.4.3",
     "tslib": "^1.7.1",
     "typescript": "^2.5.3",
