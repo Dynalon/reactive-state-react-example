@@ -18,7 +18,7 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-router-dom": "^4.2.2",
-    "reactive-state": "^0.2.2",
+    "reactive-state": "*",
     "rxjs": "^5.4.3",
     "tslib": "^1.7.1",
     "typescript": "^2.5.3",
