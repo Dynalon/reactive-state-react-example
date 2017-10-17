@@ -1,13 +1,16 @@
 import * as React from "react";
 
-// This is a "dumb" component that does not know anything about reactive-state (or redux at all)
-
 export interface CounterComponentProps {
     counter?: number;
     increment?: () => void;
     decrement?: () => void;
 }
 
+/**
+ * A "dumb" component that just shows a counter and two +/- button. Note how this component does not know
+ * anything about stores, reactive-state, actions etc. It is just a component using its props to display data,
+ * and to trigger events via functions on its component props.
+ */
 export class CounterComponent extends React.Component<CounterComponentProps, {}> {
 
     increment() {

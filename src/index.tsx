@@ -7,18 +7,30 @@ import { SimpleCounter, SimpleCounterState } from "./counter/simple-counter";
 import { AdvancedCounter } from "./counter/advanced-counter";
 import { TodoExample } from "./todo/todo";
 
-const appState = {
-    counter: 0
-}
+// This is our global AppState. We use this syntax to clearify that it is an intersection of sub-slices
+// used my app modules. We also omit some state slices alltogether for modules that create their own
+// (i.e. AdvancedCounter and Todo)
+const initialAppState = Object.assign(
+    {},
+    { counter: 0 } as SimpleCounterState,
+);
 
+// Main App entry point
 export class AppRoot extends React.Component<{}, {}> {
 
-    store: Store<any>
+    // The root store. Note that even if we work with "slices" in reactive-state, there is only a
+    // single store throughout the application just as in Redux.
+    // By using typeof initialAppState as a type, we make sure the type matches the initialState instance above
+    store: Store<typeof initialAppState>
 
-    constructor(...args: any[]) {
-        super(...args)
-        this.store = Store.create(appState)
+    componentWillMount() {
 
+        // Creates an instance of the root store.
+        this.store = Store.create(initialAppState)
+
+        // We subscribe to the global store on every change, which you wouldn't usually do
+        // (hence the true flag as second argument that would most of the times be omitted)
+        // But for this demo and debugging, we want to log each and every single state change
         this.store.select(state => state, true).subscribe(state => console.log("ROOT STATE CHANGE:", state))
     }
 
@@ -35,6 +47,7 @@ export class AppRoot extends React.Component<{}, {}> {
                     <Route exact path="/" render={() => (
                         <Redirect to="/simplecounter" />
                     )} />
+
                     <Route exact path="/simplecounter" render={() => (<SimpleCounter store={this.store} />)} />
                     <Route exact path="/advancedcounter" render={() => (<AdvancedCounter store={this.store} />)} />
                     <Route exact path="/todos" render={() => (<TodoExample store={this.store} />)} />
@@ -44,6 +57,7 @@ export class AppRoot extends React.Component<{}, {}> {
     }
 }
 
+// Bootstrap the App when the DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
     const rootNode = document.getElementById('root')
     render(<AppRoot />, rootNode)
