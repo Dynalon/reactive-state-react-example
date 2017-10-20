@@ -3,7 +3,7 @@ import { Action, Reducer, Store } from "reactive-state"
 import { Subscription } from "rxjs/Subscription"
 
 import { CounterComponent, CounterComponentProps } from "./counter-component";
-import { connect } from "../reactive-state-react"
+import { connect } from "reactive-state/dist/react"
 
 export interface SimpleCounterProps {
     store: Store<SimpleCounterState>

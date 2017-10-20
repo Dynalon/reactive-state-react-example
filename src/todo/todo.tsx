@@ -2,7 +2,7 @@ import * as React from "react"
 import { Action, Reducer, Store } from "reactive-state"
 import { Observable } from "rxjs/Rx"
 
-import { connect } from "../reactive-state-react"
+import { connect } from "reactive-state/dist/react"
 import { Todo, TodoComponent, TodoComponentProps } from "./todo-component";
 
 export interface TodoProps {
