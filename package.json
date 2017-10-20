@@ -4,7 +4,7 @@
   "description": "A simple counter/ToDo app to showcase reactive-state using React and dynamic module loading",
   "main": "index.js",
   "scripts": {
-    "develop": "webpack-dev-server --open --no-info",
+    "start": "webpack-dev-server --open --no-info",
     "build": "webpack"
   },
   "author": "Timo Dörr",
