@@ -89,7 +89,6 @@ export class TodoExample extends React.Component<TodoProps, TState> {
 
         // add some sample todos via the addTodo action
         Observable.from(sampleTodos).subscribe(n => addTodo.next(n));
-
     }
 
     componentWillUnmount() {
