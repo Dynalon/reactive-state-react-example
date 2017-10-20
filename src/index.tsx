@@ -13,6 +13,8 @@ import { TodoExample } from "./todo/todo";
 const initialAppState = Object.assign(
     {},
     { counter: 0 } as SimpleCounterState,
+
+    // add any other slices here...
 );
 
 // Main App entry point

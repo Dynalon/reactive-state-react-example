@@ -47,10 +47,7 @@ export class SimpleCounter extends React.Component<SimpleCounterProps, {}> {
             decrement: () => decrementAction.next()
         }
 
-
-
         this.ConnectedCounterComponent = connect(CounterComponent, this.props.store, mapStateToProps, actionMap)
-
     }
 
     componentWillUnmount() {

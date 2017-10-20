@@ -11,7 +11,9 @@ export interface AdvancedCounterProps {
 const incrementReducer: Reducer<number> = (state) => state + 1
 const decrementReducer: Reducer<number> = (state) => state - 1
 
-const mapStateToProps = (state: number) => ({ counter: state })
+// A function that maps our state of the slice to a matching props object of the connected component
+// the "as CounterComponentProps" is not needed, but added here to express the aforementioned comment.
+const mapStateToProps = (state: number) => ({ counter: state }) as CounterComponentProps
 
 export class AdvancedCounter extends React.Component<AdvancedCounterProps, {}> {
 
@@ -30,13 +32,15 @@ export class AdvancedCounter extends React.Component<AdvancedCounterProps, {}> {
         const increment = new Action<void>()
         const decrement = new Action<void>()
 
+        this.store.addReducer(increment, incrementReducer)
+        this.store.addReducer(decrement, decrementReducer)
+
+        // instead of functions that dispatch actions, we can just add any RxJS observer here -
+        // and since Actions and Subjects are observer, they will dispatch.
         const actionMap = {
             increment,
             decrement
         };
-
-        this.store.addReducer(increment, incrementReducer)
-        this.store.addReducer(decrement, decrementReducer)
 
         this.ConnectedCounterComponent = connect(CounterComponent, this.store, mapStateToProps, actionMap)
     }
