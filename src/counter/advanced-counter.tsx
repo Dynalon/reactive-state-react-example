@@ -8,18 +8,10 @@ export interface AdvancedCounterProps {
     store: Store<any>
 }
 
-const increment = new Action<void>()
-const decrement = new Action<void>()
-
 const incrementReducer: Reducer<number> = (state) => state + 1
 const decrementReducer: Reducer<number> = (state) => state - 1
 
 const mapStateToProps = (state: number) => ({ counter: state })
-
-const actionMap = {
-    increment,
-    decrement
-};
 
 export class AdvancedCounter extends React.Component<AdvancedCounterProps, {}> {
 
@@ -27,14 +19,26 @@ export class AdvancedCounter extends React.Component<AdvancedCounterProps, {}> {
     private ConnectedCounterComponent: React.ComponentClass<CounterComponentProps>
 
     componentWillMount() {
-        // setting "delete" as cleanup state will remove the state property from the parent alltogether
-        // this is perfect to "leave no trace" on the state once this component is unloaded
-        this.store = this.props.store.createSlice<number>("advancedCounter", 0, "delete")
+        // We will use a random-generated string as key on the store; this allows us to
+        // have multiples of this component on the same page, using different state slices.
+        const randomString = `advanced-counter-${Math.floor(Math.random() * 10000000)}`;
 
-        this.ConnectedCounterComponent = connect(CounterComponent, this.store, mapStateToProps, actionMap)
+        // The "delete" setting on the as cleanup state will remove the state property from the parent alltogether
+        // this is perfect to "leave no trace" on the state once this component is unloaded
+        this.store = this.props.store.createSlice<number>(randomString, 0, "delete")
+
+        const increment = new Action<void>()
+        const decrement = new Action<void>()
+
+        const actionMap = {
+            increment,
+            decrement
+        };
 
         this.store.addReducer(increment, incrementReducer)
         this.store.addReducer(decrement, decrementReducer)
+
+        this.ConnectedCounterComponent = connect(CounterComponent, this.store, mapStateToProps, actionMap)
     }
 
     componentWillUnmount() {
@@ -44,10 +48,7 @@ export class AdvancedCounter extends React.Component<AdvancedCounterProps, {}> {
     render() {
         const { ConnectedCounterComponent } = this
         return (
-            <div>
-                <h1>Advanced Counter Example</h1>
-                <ConnectedCounterComponent />
-            </div>
+            <ConnectedCounterComponent />
         )
     }
 }
