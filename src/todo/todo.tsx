@@ -32,17 +32,13 @@ const changeTodoStatusReducer: Reducer<Todo[], MarkAsDonePayload> = (state, payl
 const addTodo = new Action<Todo>()
 const addTodoReducer: Reducer<Todo[], Todo> = (state, todo) => [...state, todo]
 
-const mapStateToProps = (state: Todo[]) => ({ todos: state });
-
-const actionMap = {
-    setTodoStatus: (todoId: number, status: boolean) => changeTodoStatus.next({ todoId, status })
-};
 
 
 export interface TState {
     openTodos: Todo[],
     doneTodos: Todo[]
 }
+
 export class TodoExample extends React.Component<TodoProps, TState> {
 
     public state = {
@@ -57,22 +53,21 @@ export class TodoExample extends React.Component<TodoProps, TState> {
     private openTodos: Observable<Todo[]>
     private doneTodos: Observable<Todo[]>
 
-    constructor(...args: any[]) {
-        super(...args);
-    }
-    componentWillMount() {
-        this.store = this.props.store.createSlice<Todo[]>("todos", [], "delete");
+    private connectComponent() {
+
+        const mapStateToProps = (state: Todo[]) => ({ todos: state });
+        const actionMap = {
+            setTodoStatus: (todoId: number, status: boolean) => changeTodoStatus.next({ todoId, status })
+        };
 
         this.ConnectedTodoComponent = connect(TodoComponent, this.store, mapStateToProps, actionMap)
+    }
 
-        this.store.addReducer(changeTodoStatus, changeTodoStatusReducer);
-        this.store.addReducer(addTodo, addTodoReducer);
-
+    private setupComputedValues() {
         // Using RxJS operators we can transform/map/accumulate values (=computed values) into
         // new Observables...
         this.openTodos = this.store.select(todos => todos)
             .map(todos => todos.filter(todo => todo.done == false))
-
         this.doneTodos = this.store.select(todos => todos)
             .map(todos => todos.filter(todo => todo.done == true))
 
@@ -80,6 +75,17 @@ export class TodoExample extends React.Component<TodoProps, TState> {
         // the components internal state
         const unpackMap = { openTodos: this.openTodos, doneTodos: this.doneTodos }
         observablesToState(this, unpackMap)
+    }
+
+    componentWillMount() {
+        this.store = this.props.store.createSlice<Todo[]>("todos", [], "delete");
+
+        this.connectComponent();
+
+        this.setupComputedValues();
+
+        this.store.addReducer(changeTodoStatus, changeTodoStatusReducer);
+        this.store.addReducer(addTodo, addTodoReducer);
 
         // add some sample todos via the addTodo action
         Observable.from(sampleTodos).subscribe(n => addTodo.next(n));
