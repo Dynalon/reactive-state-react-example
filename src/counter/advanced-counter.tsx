@@ -11,9 +11,11 @@ export interface AdvancedCounterProps {
 const incrementReducer: Reducer<number> = (state) => state + 1
 const decrementReducer: Reducer<number> = (state) => state - 1
 
-// A function that maps our state of the slice to a matching props object of the connected component
-// the "as CounterComponentProps" is not needed, but added here to express the aforementioned comment.
-const mapStateToProps = (state: number) => ({ counter: state }) as CounterComponentProps
+// A function that maps our state of the slice to a matching props object of the component to connect.
+// Since we do not need to account for all props of the component to connect, the return type must be
+// of type Partial<CounterComponentProps>. Note that the casting of the return type with the 'as' is
+// completely optional here and only added for clarity.
+const mapStateToProps = (state: number) => ({ counter: state }) as Partial<CounterComponentProps>
 
 export class AdvancedCounter extends React.Component<AdvancedCounterProps, {}> {
 
