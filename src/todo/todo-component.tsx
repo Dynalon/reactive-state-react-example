@@ -22,7 +22,7 @@ export class TodoComponent extends React.Component<TodoComponentProps, {}> {
 
     render() {
         return (
-            <div>
+            <div className="link">
                 {this.props.todos.map(todo => (<div key={todo.id} onClick={() => this.toggleTodo(todo)} >
                     <input type="checkbox" checked={todo.done} />
                     <span style={ {textDecoration: todo.done ? "line-through" : "none" } } > {todo.title}</span>
