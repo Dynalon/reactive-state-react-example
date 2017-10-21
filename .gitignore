@@ -1,6 +1,3 @@
-wwwroot/**/*.js
-wwwroot/**/*.js.map
-
 dist/
 node_modules/
 

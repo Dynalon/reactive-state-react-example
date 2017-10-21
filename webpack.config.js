@@ -4,7 +4,7 @@ const { CheckerPlugin } = require('awesome-typescript-loader')
 module.exports = {
     entry: "./src/index",
     output: {
-        path: path.resolve(__dirname, "wwwroot/"),
+        path: path.resolve(__dirname, "dist/"),
         filename: "app.js",
         library: "App",
         libraryTarget: "umd"
@@ -34,7 +34,7 @@ module.exports = {
     target: "web",
 
     devServer: {
-        contentBase: path.join(__dirname, "wwwroot"),
+        contentBase: path.join(__dirname, "dist"),
         compress: true,
         port: 8080
     }
