@@ -7,6 +7,9 @@
     "start": "webpack-dev-server --open --no-info",
     "build": "webpack"
   },
+  "engines": {
+    "npm": ">=5.0.0"
+  },
   "author": "Timo Dörr",
   "license": "MIT",
   "devDependencies": {
