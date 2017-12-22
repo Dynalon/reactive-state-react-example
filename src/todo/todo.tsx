@@ -32,8 +32,6 @@ const changeTodoStatusReducer: Reducer<Todo[], MarkAsDonePayload> = (state, payl
 const addTodo = new Action<Todo>()
 const addTodoReducer: Reducer<Todo[], Todo> = (state, todo) => [...state, todo]
 
-
-
 export interface TState {
     openTodos: Todo[],
     doneTodos: Todo[]
@@ -60,7 +58,7 @@ export class TodoExample extends React.Component<TodoProps, TState> {
             setTodoStatus: (todoId: number, status: boolean) => changeTodoStatus.next({ todoId, status })
         };
 
-        this.ConnectedTodoComponent = connect(TodoComponent, this.store, mapStateToProps, actionMap)
+        this.ConnectedTodoComponent = connect(TodoComponent, { store: this.store, mapStateToProps, actionMap })
     }
 
     private setupComputedValues() {
