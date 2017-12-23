@@ -19,7 +19,7 @@ const mapStateToProps = (state: number) => ({ counter: state } as Partial<Counte
 
 const ConnectedCounterComponent = connect(CounterComponent, { mapStateToProps });
 
-export class AdvancedCounter extends React.Component<AdvancedCounterProps, {}> {
+export default class extends React.Component<AdvancedCounterProps, {}> {
 
     private store: Store<number>
     private actionMap: any;

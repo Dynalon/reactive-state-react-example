@@ -29,7 +29,7 @@ const mapStateToProps = (state: SimpleCounterState) => {
 // Create a "connected" component - we will pass arguments as props to it later on
 const ConnectedCounterComponent = connect(CounterComponent);
 
-export class SimpleCounter extends React.Component<SimpleCounterProps, {}> {
+export default class extends React.Component<SimpleCounterProps, {}> {
 
     private cleanupSubscription = new Subscription();
 

@@ -3,9 +3,10 @@ import { HashRouter as Router, Route, Link, Redirect } from "react-router-dom";
 import { render } from "react-dom";
 import { Store } from 'reactive-state';
 
-import { SimpleCounter, SimpleCounterState } from "./counter/simple-counter";
-import { AdvancedCounter } from "./counter/advanced-counter";
-import { TodoExample } from "./todo/todo";
+import SimpleCounter, { SimpleCounterState } from "./counter/simple-counter";
+import AdvancedCounter from "./counter/advanced-counter";
+import Todo from "./todo";
+import Dogs from "./dogs";
 
 // This is our global AppState. We use this syntax to clearify that it is an intersection of sub-slices
 // used my app modules. We also omit some state slices alltogether for modules that create their own
@@ -43,7 +44,8 @@ export class AppRoot extends React.Component<{}, {}> {
                     <nav>
                         <Link to="/simplecounter">Simple Counter</Link> |
                         <Link to="/advancedcounter"> Advanced Counter</Link> |
-                        <Link to="/todos"> Todo Example</Link>
+                        <Link to="/todos"> Todo Example</Link> |
+                        <Link to="/dogs"> Dog Breeds</Link>
                     </nav>
 
                     <Route exact path="/" render={() => (
@@ -58,7 +60,11 @@ export class AppRoot extends React.Component<{}, {}> {
                         <AdvancedCounter store={this.store} />
                     </div>
                     )} />
-                    <Route exact path="/todos" render={() => (<TodoExample store={this.store} />)} />
+
+                    <Route exact path="/todos" render={() => (<Todo store={this.store} />)} />
+
+                    <Route exact path="/dogs" render={() => (<Dogs store={this.store} />)} />
+
                 </div>
             </Router>
         )
