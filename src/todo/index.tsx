@@ -76,7 +76,7 @@ export default class extends React.Component<TodoProps, TState> {
     }
 
     componentWillMount() {
-        this.store = this.props.store.createSlice<Todo[]>("todos", [], "delete");
+        this.store = this.props.store.createSlice<Todo[]>("todos", []);
 
         this.connectComponent();
 
@@ -85,8 +85,11 @@ export default class extends React.Component<TodoProps, TState> {
         this.store.addReducer(changeTodoStatus, changeTodoStatusReducer);
         this.store.addReducer(addTodo, addTodoReducer);
 
-        // add some sample todos via the addTodo action
-        Observable.from(sampleTodos).subscribe(n => addTodo.next(n));
+        // add some sample todos via the addTodo action if none present
+        this.store.select().take(1).subscribe(todos => {
+            if (todos.length === 0)
+                Observable.from(sampleTodos).subscribe(n => addTodo.next(n));
+        })
     }
 
     componentWillUnmount() {

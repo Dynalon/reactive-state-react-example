@@ -35,18 +35,15 @@ const mapStateToProps = (state: DogsSlice) => {
 
 const ConnectedDogs = connect(Dogs, { mapStateToProps });
 
-export default class extends React.Component<DogProps, DogState> {
-
-    state: DogState = {
-        secondsElapsed: 0
-    }
+export default class extends React.Component<DogProps, {}> {
 
     store: Store<DogsSlice>
     actionMap: ActionMap<DogsComponentProps>
 
     componentWillMount() {
 
-        this.store = this.props.store.createSlice("mixed", { breedNames: [] })
+        // Note how we do not specifiy a cleanup state - this allows us to restore the breed & image when navigating away
+        this.store = this.props.store.createSlice("dogs", { breedNames: [] });
 
         const fetchBreedNames = Observable.defer(() => fetch("http://dog.ceo/api/breeds/list"))
             .switchMap(response => response.json())
@@ -58,7 +55,6 @@ export default class extends React.Component<DogProps, DogState> {
             .switchMap(breedName => fetch(`http://dog.ceo/api/breed/${breedName}/images/random`))
             .switchMap(response => response.json())
             .map(body => body.message as string)
-
 
         this.store.addReducer(fetchBreedNames, (state, breedNames) => ({ ...state, breedNames }))
         this.store.addReducer(fetchSampleImage, (state, imageUrl) => ({ ...state, breedSampleImage: imageUrl }))
