@@ -5,7 +5,7 @@ import { Subscription } from "rxjs/Subscription"
 import { Subject } from "rxjs/Subject"
 
 import { Store, Action, Reducer } from "reactive-state"
-import { connect, ActionMap } from "reactive-state/dist/react"
+import { connect, ActionMap } from "reactive-state/react"
 
 import { Dogs, DogsProps as DogsComponentProps } from "./dogs"
 

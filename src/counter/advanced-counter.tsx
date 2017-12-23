@@ -2,7 +2,7 @@ import * as React from "react"
 import { Action, Reducer, Store } from "reactive-state"
 import { CounterComponent, CounterComponentProps } from "./counter-component"
 
-import { connect, ActionMap } from "reactive-state/dist/react"
+import { connect, ActionMap } from "reactive-state/react"
 
 export interface AdvancedCounterProps {
     store: Store<any>

@@ -2,7 +2,7 @@ import * as React from "react"
 import { Action, Reducer, Store } from "reactive-state"
 import { Observable } from "rxjs/Rx"
 
-import { connect, unpackToState, Optional } from "reactive-state/dist/react"
+import { connect, unpackToState, Optional } from "reactive-state/react"
 import { Todo, TodoComponent, TodoComponentProps } from "./todo-component";
 import { TodoSummaryComponent } from "./todo-summary";
 import { sampleTodos } from "./sample-todos"
