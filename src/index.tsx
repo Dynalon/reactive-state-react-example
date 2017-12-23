@@ -55,6 +55,7 @@ export class AppRoot extends React.Component<{}, {}> {
                     <Route exact path="/simplecounter" render={() => (<SimpleCounter store={this.store} />)} />
 
                     <Route exact path="/advancedcounter" render={() => (<div>
+                        <h1>Advanced Counter</h1>
                         <AdvancedCounter store={this.store} />
                         <AdvancedCounter store={this.store} />
                         <AdvancedCounter store={this.store} />

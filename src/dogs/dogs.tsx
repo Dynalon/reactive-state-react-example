@@ -1,9 +1,9 @@
-import * as React from "react";
+import * as React from "react"
 
 export interface DogsProps {
-    breedNames: string[];
-    selectedBreed?: string;
-    breedSampleImage?: string;
+    breedNames: string[]
+    selectedBreed?: string
+    breedSampleImage?: string
     onGetNewSampleImage: (breedName: string) => void
 }
 
@@ -12,7 +12,6 @@ export interface DogsState {
 }
 
 export class Dogs extends React.Component<DogsProps, DogsState> {
-
 
     static defaultProps: DogsProps = {
         breedNames: [],
@@ -30,9 +29,9 @@ export class Dogs extends React.Component<DogsProps, DogsState> {
     componentDidUpdate(prevProps: DogsProps) {
         if (prevProps.breedNames !== this.props.breedNames) {
             if (this.props.selectedBreed) {
-                this.setBreed(this.props.selectedBreed);
+                this.setBreed(this.props.selectedBreed)
             } else if (this.props.breedNames.length > 0) {
-                this.setBreed(this.props.breedNames[0])
+                this.onBreedSelected(this.props.breedNames[0])
             }
         }
     }
@@ -43,10 +42,10 @@ export class Dogs extends React.Component<DogsProps, DogsState> {
                 <h1>Dog Breeds</h1>
 
                 <span className="container">
-                    Breed: <select value={this.props.selectedBreed} onChange={(ev) => this.setBreed(ev.target.value)}>
+                    Breed: <select value={this.props.selectedBreed} onChange={(ev) => this.onBreedSelected(ev.target.value)}>
                         {
                             this.props.breedNames.map((breed, index) => {
-                                return <option key={index} value={breed}>{breed}</option>;
+                                return <option key={index} value={breed}>{breed}</option>
                             })
                         }
                     </select>
@@ -72,11 +71,15 @@ export class Dogs extends React.Component<DogsProps, DogsState> {
     }
 
     private fetchNewRandomImage = () => {
-        this.props.onGetNewSampleImage(this.state.selectedBreed!);
+        this.props.onGetNewSampleImage(this.state.selectedBreed!)
     }
 
-    private setBreed(breedName: string) {
-        const callback = this.fetchNewRandomImage;
-        this.setState(prevState => ({ ...prevState, selectedBreed: breedName }), callback);
+    private setBreed(selectedBreed: string, updateImage: boolean = false) {
+        const callback = () => updateImage && this.fetchNewRandomImage();
+        this.setState(prevState => ({ ...prevState, selectedBreed }), callback)
+    }
+
+    private onBreedSelected(breedName: string) {
+        this.setBreed(breedName, true)
     }
 }

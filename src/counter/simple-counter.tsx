@@ -64,7 +64,7 @@ export default class extends React.Component<SimpleCounterProps, {}> {
     render() {
         return (
             <div>
-                <h1>Simple Counter Example</h1>
+                <h1>Simple Counter</h1>
 
                 <ConnectedCounterComponent
                     store={this.props.store}
