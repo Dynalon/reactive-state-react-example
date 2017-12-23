@@ -52,8 +52,11 @@ export class Dogs extends React.Component<DogsProps, DogsState> {
                 </span>
 
                 <span className="container">
+                    <a href="javascript:" onClick={this.setToRandomBreed}>
+                        Random Breed
+                    </a> |&nbsp;
                     <a href="javascript:" onClick={this.fetchNewRandomImage}>
-                        Click to update random pic of {this.state.selectedBreed}
+                        New random Pic of {this.state.selectedBreed}
                     </a>
                 </span>
 
@@ -81,5 +84,10 @@ export class Dogs extends React.Component<DogsProps, DogsState> {
 
     private onBreedSelected(breedName: string) {
         this.setBreed(breedName, true)
+    }
+
+    private setToRandomBreed = () => {
+        const newBreed = this.props.breedNames[Math.floor(Math.random() * this.props.breedNames.length)]
+        this.onBreedSelected(newBreed)
     }
 }
