@@ -11,25 +11,25 @@ export interface CounterComponentProps {
  * anything about stores, reactive-state, actions etc. It is just a component using its props to display data,
  * and to trigger events via functions on its component props.
  */
-export class CounterComponent extends React.Component<CounterComponentProps, {}> {
+export const CounterComponent: React.SFC<CounterComponentProps> = (props: CounterComponentProps) => {
 
-    increment() {
-        if (this.props.increment) {
-            this.props.increment();
+    function increment() {
+        if (props.increment) {
+            props.increment();
         }
     }
 
-    decrement() {
-        if (this.props.decrement) {
-            this.props.decrement();
+    function decrement() {
+        if (props.decrement) {
+            props.decrement();
         }
     }
 
-    render() {
-        return (<p>
-            Counter is: {this.props.counter} &nbsp;
-            <button onClick={this.increment.bind(this)}> + </button>
-            <button onClick={this.decrement.bind(this)}> - </button>
-        </p>)
-    }
+    return (<p>
+        Counter is: {props.counter} &nbsp;
+        <button onClick={increment}> + </button>
+        <button onClick={decrement}> - </button>
+    </p>)
 }
+
+export default CounterComponent;
