@@ -44,8 +44,8 @@ export class Dogs extends React.Component<DogsProps, DogsState> {
                 <span className="container">
                     Breed: <select value={this.props.selectedBreed} onChange={(ev) => this.onBreedSelected(ev.target.value)}>
                         {
-                            this.props.breedNames.map((breed, index) => {
-                                return <option key={index} value={breed}>{breed}</option>
+                            this.props.breedNames.map(breed => {
+                                return <option key={breed} value={breed}>{breed}</option>
                             })
                         }
                     </select>
