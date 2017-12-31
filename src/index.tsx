@@ -1,7 +1,8 @@
 import * as React from "react";
 import { HashRouter as Router, Route, Link, Redirect } from "react-router-dom";
 import { render } from "react-dom";
-import { Store } from 'reactive-state';
+import { Store } from "reactive-state";
+import { enableDevTool } from "reactive-state/src/devtool";
 
 import SimpleCounter, { SimpleCounterState } from "./counter/simple-counter";
 import AdvancedCounter from "./counter/advanced-counter";
@@ -30,6 +31,8 @@ export class AppRoot extends React.Component<{}, {}> {
 
         // Creates an instance of the root store.
         this.store = Store.create(initialAppState)
+
+        enableDevTool(this.store);
 
         // We subscribe to the global store on every change, which you wouldn't usually do
         // (hence the true flag as second argument that would most of the times be omitted)
@@ -74,6 +77,6 @@ export class AppRoot extends React.Component<{}, {}> {
 
 // Bootstrap the App when the DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
-    const rootNode = document.getElementById('root')
+    const rootNode = document.getElementById("root")
     render(<AppRoot />, rootNode)
 })
