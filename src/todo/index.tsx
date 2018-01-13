@@ -2,7 +2,7 @@ import * as React from "react"
 import { Action, Reducer, Store } from "reactive-state"
 import { Observable } from "rxjs/Rx"
 
-import { connect, unpackToState, Optional } from "reactive-state/react"
+import { connect, ActionMap, unpackToState } from "reactive-state/react"
 import { Todo, TodoComponent, TodoComponentProps } from "./todo-component";
 import { TodoSummaryComponent } from "./todo-summary";
 import { sampleTodos } from "./sample-todos"
@@ -12,15 +12,15 @@ export interface TodoProps {
     todos?: Todo[]
 }
 
-interface MarkAsDonePayload {
+interface ChangeTodoStatusPayload {
     todoId: number
     status: boolean;
 }
 
-const changeTodoStatus = new Action<MarkAsDonePayload>()
+const changeTodoStatus = new Action<ChangeTodoStatusPayload>()
 
 // we use a single reducer for marking as done, and marking as undone
-const changeTodoStatusReducer: Reducer<Todo[], MarkAsDonePayload> = (state, payload) => {
+const changeTodoStatusReducer: Reducer<Todo[], ChangeTodoStatusPayload> = (state, payload) => {
     return state.map(todo => {
         if (todo.id !== payload.todoId)
             return todo;
@@ -32,53 +32,44 @@ const changeTodoStatusReducer: Reducer<Todo[], MarkAsDonePayload> = (state, payl
 const addTodo = new Action<Todo>()
 const addTodoReducer: Reducer<Todo[], Todo> = (state, todo) => [...state, todo]
 
-export interface TState {
+export interface TodoState {
     openTodos: Todo[],
     doneTodos: Todo[]
 }
 
-export default class extends React.Component<TodoProps, TState> {
+// create a connected version of our dumb/presentational component (binding to store will happen later at runtime)
+const mapStateToProps = (state: Todo[]) => ({ todos: state })
+const ConnectedTodoComponent = connect(TodoComponent, { mapStateToProps })
 
-    public state: TState = {
+export default class extends React.Component<TodoProps, TodoState> {
+
+    public state: TodoState = {
         openTodos: [],
         doneTodos: []
     }
 
     private store: Store<Todo[]>
-    private ConnectedTodoComponent: React.ComponentClass<Optional<TodoComponentProps>>
-
-    // derived observales from our state
-    private openTodos: Observable<Todo[]>
-    private doneTodos: Observable<Todo[]>
-
-    private connectComponent() {
-
-        const mapStateToProps = (state: Todo[]) => ({ todos: state });
-        const actionMap = {
-            setTodoStatus: (todoId: number, status: boolean) => changeTodoStatus.next({ todoId, status })
-        };
-
-        this.ConnectedTodoComponent = connect(TodoComponent, { store: this.store, mapStateToProps, actionMap })
-    }
+    private actionMap: ActionMap<TodoComponentProps>
 
     private setupComputedValues() {
         // Using RxJS operators we can transform/map/accumulate values (=computed values) into
         // new Observables...
-        this.openTodos = this.store.select(todos => todos)
+        const openComputed = this.store.select(todos => todos)
             .map(todos => todos.filter(todo => todo.done === false))
-        this.doneTodos = this.store.select(todos => todos)
+        const doneComputed = this.store.select(todos => todos)
             .map(todos => todos.filter(todo => todo.done === true))
 
-        // ...and use the unpackToState() helper function to unpack the observable values automatically to
-        // the components internal state
-        const unpackMap = { openTodos: this.openTodos, doneTodos: this.doneTodos }
+        // ...and use the unpackToState() helper function to unpack the observables last emitted values
+        // automatically to the components internal state
+        const unpackMap = { openTodos: openComputed, doneTodos: doneComputed }
         unpackToState(this, unpackMap)
     }
 
     componentWillMount() {
         this.store = this.props.store.createSlice<Todo[]>("todos", []);
-
-        this.connectComponent();
+        this.actionMap = {
+            setTodoStatus: (todoId: number, status: boolean) => changeTodoStatus.next({ todoId, status })
+        };
 
         this.setupComputedValues();
 
@@ -94,17 +85,16 @@ export default class extends React.Component<TodoProps, TState> {
 
     componentWillUnmount() {
         // Important: Allways destroy a slice to make sure all subscriptions are unsubscribed.
-        // This also unsubscribes any subscriptions to doneTodos or openTodos!
+        // This also unsubscribes any subscriptions to our computed observables doneTodos or openTodos!
         this.store.destroy();
     }
 
     render() {
-        const { ConnectedTodoComponent } = this;
         return (
             <div>
                 <h1>Todo</h1>
                 <div className="container">
-                    <ConnectedTodoComponent todos={this.props.todos || []} />
+                    <ConnectedTodoComponent store={this.store} actionMap={this.actionMap} todos={this.props.todos} />
                 </div>
                 <div>
                     <div className="container box">

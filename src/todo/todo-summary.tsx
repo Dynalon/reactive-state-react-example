@@ -1,16 +1,14 @@
 import * as React from "react";
 
+// This file is a 'dumb' or 'presentational' component with no dependencies except for React itself
+
 export interface TodoSummaryComponentProps {
     open: number;
     done: number;
 }
 
-export class TodoSummaryComponent extends React.Component<TodoSummaryComponentProps, {}> {
-    render() {
-        return (
-            <div>
-                <br />#open {this.props.open} | #done {this.props.done}
-            </div>
-        )
-    }
+export const TodoSummaryComponent: React.StatelessComponent<TodoSummaryComponentProps> = (props) => {
+    return <div>
+        <br />#open {props.open} | #done {props.done}
+    </div>
 }

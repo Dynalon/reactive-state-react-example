@@ -1,9 +1,11 @@
 import * as React from "react"
 
+// This file is a 'dumb' or 'presentational' component with no dependencies except for React itself
+
 export interface DogsProps {
     breedNames: string[]
     selectedBreed?: string
-    breedSampleImage?: string
+    breedSampleImageUrl?: string
     onGetNewSampleImage: (breedName: string) => void
 }
 
@@ -61,8 +63,8 @@ export class Dogs extends React.Component<DogsProps, DogsState> {
                 </span>
 
                 <div className="container">
-                    {this.props.breedSampleImage &&
-                        <img src={this.props.breedSampleImage} style={{ maxWidth: "400px" }} />
+                    {this.props.breedSampleImageUrl &&
+                        <img src={this.props.breedSampleImageUrl} style={{ maxWidth: "400px" }} />
                     }
                 </div>
 

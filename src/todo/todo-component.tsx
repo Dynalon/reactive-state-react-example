@@ -1,5 +1,6 @@
 import * as React from "react"
-import { Action, Reducer, Store } from "reactive-state"
+
+// This file is a 'dumb' or 'presentational' component with no dependencies except for React itself
 
 export interface Todo {
     id: number;
@@ -13,6 +14,10 @@ export interface TodoComponentProps {
 }
 
 export class TodoComponent extends React.Component<TodoComponentProps, {}> {
+
+    public static defaultProps: TodoComponentProps = {
+        todos: []
+    }
 
     private toggleTodo = (todo: Todo) => {
         if (this.props.setTodoStatus) {

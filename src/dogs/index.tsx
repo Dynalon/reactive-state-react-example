@@ -21,7 +21,7 @@ export interface DogState {
 interface DogsSlice {
     breedNames: string[]
     selectedBreed?: string
-    breedSampleImage?: string
+    breedSampleImageUrl?: string
 }
 
 
@@ -29,7 +29,7 @@ const mapStateToProps = (state: DogsSlice) => {
     return {
         breedNames: state.breedNames,
         selectedBreed: state.selectedBreed,
-        breedSampleImage: state.breedSampleImage
+        breedSampleImageUrl: state.breedSampleImageUrl
     }
 }
 
@@ -45,23 +45,27 @@ export default class extends React.Component<DogProps, {}> {
         // Note how we do not specifiy a cleanup state - this allows us to restore the breed & image when navigating away
         this.store = this.props.store.createSlice("dogs", { breedNames: [] });
 
+        // Use an observable as action to fetch a list of all available dog breeds
         const fetchBreedNames = Observable.defer(() => fetch("http://dog.ceo/api/breeds/list"))
             .switchMap(response => response.json())
             .map(body => body.message as string[])
 
+        // use a Subject as Action that will trigger fetching an example image by a given breed name
         const getSampleImage = new Subject<string>()
 
+        // the actual logic that will fetch the image
         const fetchSampleImage = getSampleImage
             .switchMap(breedName => fetch(`http://dog.ceo/api/breed/${breedName}/images/random`))
             .switchMap(response => response.json())
             .map(body => body.message as string)
 
         this.store.addReducer(fetchBreedNames, (state, breedNames) => ({ ...state, breedNames }))
-        this.store.addReducer(fetchSampleImage, (state, imageUrl) => ({ ...state, breedSampleImage: imageUrl }))
+        this.store.addReducer(fetchSampleImage, (state, imageUrl) => ({ ...state, breedSampleImageUrl: imageUrl }))
         this.store.addReducer(getSampleImage, (state, breedName) => {
             return ({ ...state, selectedBreed: breedName })
         })
 
+        // map the function callbacks from the dumb/presentational Dog component to our actions (just one in this case)
         this.actionMap = {
             onGetNewSampleImage: getSampleImage
         }

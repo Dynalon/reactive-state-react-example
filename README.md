@@ -10,7 +10,7 @@ Setup
 
 1. `git clone` this repo
 1. `npm install`
-1. `npm run start`
+1. `npm start`
 
 License
 ----
