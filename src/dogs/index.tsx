@@ -1,13 +1,13 @@
 import * as React from "react"
 
-import { Observable } from "rxjs/Observable"
+import {  Observable }  from "rxjs/Observable"
 import { Subscription } from "rxjs/Subscription"
 import { Subject } from "rxjs/Subject"
 
-import { Store, Action, Reducer } from "reactive-state"
-import { connect, ActionMap } from "reactive-state/react"
+import {  Store, Action, Reducer } from "reactive-state"
+import {  connect, ActionMap } from "reactive-state/react"
 
-import { Dogs, DogsProps as DogsComponentProps } from "./dogs"
+import {  Dogs, DogsProps as DogsComponentProps } from "./dogs"
 
 export interface DogProps {
     store: Store<any>
@@ -33,7 +33,7 @@ const mapStateToProps = (state: DogsSlice) => {
     }
 }
 
-const ConnectedDogs = connect(Dogs, { mapStateToProps });
+const ConnectedDogs = connect(Dogs, {  mapStateToProps });
 
 export default class extends React.Component<DogProps, {}> {
 
@@ -59,11 +59,13 @@ export default class extends React.Component<DogProps, {}> {
             .switchMap(response => response.json())
             .map(body => body.message as string)
 
-        this.store.addReducer(fetchBreedNames, (state, breedNames) => ({ ...state, breedNames }))
-        this.store.addReducer(fetchSampleImage, (state, imageUrl) => ({ ...state, breedSampleImageUrl: imageUrl }))
+        // add reducers/action pairs - note that the string names are only for debugging purposes in devtools and
+        // not required
+        this.store.addReducer(fetchBreedNames, (state, breedNames) => ({ ...state, breedNames }), "FETCH_BREED_NAMES")
+        this.store.addReducer(fetchSampleImage, (state, imageUrl) => ({ ...state, breedSampleImageUrl: imageUrl }), "FETCH_SAMPLE_IMAGE")
         this.store.addReducer(getSampleImage, (state, breedName) => {
             return ({ ...state, selectedBreed: breedName })
-        })
+        }, "SELECT_BREED_NAME")
 
         // map the function callbacks from the dumb/presentational Dog component to our actions (just one in this case)
         this.actionMap = {

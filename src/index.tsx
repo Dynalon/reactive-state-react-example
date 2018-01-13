@@ -2,7 +2,7 @@ import * as React from "react";
 import { HashRouter as Router, Route, Link, Redirect } from "react-router-dom";
 import { render } from "react-dom";
 import { Store } from "reactive-state";
-import { enableDevTool } from "reactive-state/src/devtool";
+import { enableDevTool } from "reactive-state/src/devtool";
 
 import SimpleCounter, { SimpleCounterState } from "./counter/simple-counter";
 import AdvancedCounter from "./counter/advanced-counter";
@@ -68,6 +68,10 @@ export class AppRoot extends React.Component<{}, {}> {
                     <Route exact path="/todos" render={() => (<Todo store={this.store} />)} />
 
                     <Route exact path="/dogs" render={() => (<Dogs store={this.store} />)} />
+
+                    <div style= {{ "font-size": "smaller" }}>
+                        (if you have the <a href="">Redux Devtool Browser Extension</a> installed, you can use it here)
+                    </div>
 
                 </div>
             </Router>
