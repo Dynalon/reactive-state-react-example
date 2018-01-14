@@ -69,8 +69,9 @@ export class AppRoot extends React.Component<{}, {}> {
 
                     <Route exact path="/dogs" render={() => (<Dogs store={this.store} />)} />
 
-                    <div style= {{ "font-size": "smaller" }}>
-                        (if you have the <a href="">Redux Devtool Browser Extension</a> installed, you can use it here)
+                    <div style= {{ "fontSize": "smaller" }}>
+                        (if you have the <a target="_new" href="https://github.com/facebook/react-devtools">
+                        Redux Devtool Browser Extension</a> installed, you can use it with this app)
                     </div>
 
                 </div>
