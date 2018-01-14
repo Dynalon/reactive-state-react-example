@@ -19,9 +19,10 @@ const incrementReducer: Reducer<SimpleCounterState> = (state) => ({ ...state, co
 const decrementReducer: Reducer<SimpleCounterState> = (state) => ({ ...state, counter: state.counter - 1 })
 
 // This is the exact equivalent of  "mapStateToProps" in react-redux; We get a State and pick properties which should
-// be fed as input the component as its props
+// be fed as input to the component as its props
 const mapStateToProps = (state: SimpleCounterState) => {
     return {
+        // "counter" prop on the component will be connected to the properties counter of our app state
         counter: state.counter
     }
 }
