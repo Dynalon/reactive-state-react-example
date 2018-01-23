@@ -31,7 +31,7 @@ export default class extends React.Component<AdvancedCounterProps, {}> {
 
         // The "delete" setting on the as cleanup state will remove the state property from the parent alltogether
         // this is perfect to "leave no trace" on the state once this component is unloaded
-        this.store = this.props.store.createSlice<number>(randomString, 0, "delete")
+        this.store = this.props.store.createSlice(randomString, 0, "delete")
 
         const increment = new Action<void>()
         const decrement = new Action<void>()
@@ -48,6 +48,8 @@ export default class extends React.Component<AdvancedCounterProps, {}> {
     }
 
     componentWillUnmount() {
+        // instead of tracking every subscription and manually unsubscribing, we can simple destroy our store slice.
+        // All subscriptions to observables created via the slice's .select() method will be automatically unsubscribed
         this.store.destroy()
     }
 

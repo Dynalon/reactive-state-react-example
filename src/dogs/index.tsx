@@ -13,10 +13,6 @@ export interface DogProps {
     store: Store<any>
 }
 
-export interface DogState {
-    secondsElapsed: number
-}
-
 // AppState for our container slice
 interface DogsSlice {
     breedNames: string[]

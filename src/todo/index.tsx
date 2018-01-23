@@ -66,7 +66,7 @@ export default class extends React.Component<TodoProps, TodoState> {
     }
 
     componentWillMount() {
-        this.store = this.props.store.createSlice<Todo[]>("todos", []);
+        this.store = this.props.store.createSlice("todos", []);
         this.actionMap = {
             setTodoStatus: (todoId: number, status: boolean) => changeTodoStatus.next({ todoId, status })
         };
