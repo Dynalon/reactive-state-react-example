@@ -13,21 +13,21 @@
   "author": "Timo Dörr",
   "license": "MIT",
   "devDependencies": {
-    "@types/react": "^16.0.16",
+    "@types/react": "^16.3.11",
     "@types/react-dom": "^16.0.1",
     "@types/react-router": "^4.0.15",
     "@types/react-router-dom": "^4.0.8",
     "awesome-typescript-loader": "^3.2.3",
     "tslib": "^1.7.1",
-    "typescript": "^2.5.3",
+    "typescript": "^2.8.3",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"
   },
   "dependencies": {
-    "react": "^16.0.0",
+    "react": "^16.3.2",
     "react-dom": "^16.0.0",
     "react-router-dom": "^4.2.2",
     "reactive-state": "^1.0.0",
-    "rxjs": "^5.5.0"
+    "rxjs": "^5.5.8"
   }
 }

@@ -3,11 +3,7 @@ import { Action, Reducer, Store } from "reactive-state"
 import { Subscription } from "rxjs/Subscription"
 
 import { CounterComponent, CounterComponentProps } from "./counter-component";
-import { connect, ActionMap } from "reactive-state/react"
-
-export interface SimpleCounterProps {
-    store: Store<SimpleCounterState>
-}
+import { connect, ActionMap, MapStateToProps } from "reactive-state/react"
 
 export interface SimpleCounterState {
     counter: number
@@ -27,53 +23,25 @@ const mapStateToProps = (state: SimpleCounterState) => {
     }
 }
 
-// Create a "connected" component - we will pass arguments as props to it later on
-const ConnectedCounterComponent = connect(CounterComponent);
+export default connect(CounterComponent, (store: Store<SimpleCounterState>) => {
+    const cleanupSubscription = new Subscription();
 
-export default class extends React.Component<SimpleCounterProps, {}> {
+    const increment = new Action<void>();
+    const decrement = new Action<void>();
 
-    private cleanupSubscription = new Subscription();
+    cleanupSubscription.add(store.addReducer(increment, incrementReducer))
+    cleanupSubscription.add(store.addReducer(decrement, decrementReducer))
 
-    private actionMap: ActionMap<CounterComponentProps>;
-
-    componentWillMount() {
-
-        // Actions can be any Observable and - of course - Subjects, too. We use a custom Action class that derives
-        // from Subject but accepts a string name for debugging - but names are completely optional!
-        const incrementAction = new Action<void>("INCREMENT")
-        const decrementAction = new Action<void>("DECREMENT")
-
-        // we register an action and a reducer on the store to wire them together
-        const subscription1 = this.props.store.addReducer(incrementAction, incrementReducer)
-        const subscription2 = this.props.store.addReducer(decrementAction, decrementReducer)
-
-        this.cleanupSubscription.add(subscription1);
-        this.cleanupSubscription.add(subscription2);
-
-        // This is the equivalent of "mapDispatchToProps" - the keys of the map match the function props of the
-        // connected component, the right hand side triggers the corresponding action
-        this.actionMap = {
-            increment: () => incrementAction.next(),
-            decrement: () => decrementAction.next()
-        }
+    const actionMap: ActionMap<CounterComponentProps> = {
+        increment: () => increment.next(),
+        decrement: () => decrement.next()
     }
 
-    componentWillUnmount() {
-        this.cleanupSubscription.unsubscribe();
+    return {
+        actionMap,
+        mapStateToProps,
+        store,
+        cleanupSubscription
     }
 
-    render() {
-        return (
-            <div>
-                <h1>Simple Counter</h1>
-
-                <ConnectedCounterComponent
-                    store={this.props.store}
-                    mapStateToProps={mapStateToProps}
-                    actionMap={this.actionMap}
-                />
-
-            </div>
-        )
-    }
-}
+});

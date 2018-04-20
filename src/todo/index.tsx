@@ -1,16 +1,11 @@
 import * as React from "react"
 import { Action, Reducer, Store } from "reactive-state"
-import { Observable } from "rxjs/Rx"
+import { Observable, Subscription } from "rxjs/Rx"
 
-import { connect, ActionMap, unpackToState } from "reactive-state/react"
+import { connect, withStore, unpackToState, ActionMap } from "reactive-state/react"
 import { Todo, TodoComponent, TodoComponentProps } from "./todo-component";
 import { TodoSummaryComponent } from "./todo-summary";
 import { sampleTodos } from "./sample-todos"
-
-export interface TodoProps {
-    store: Store<any>,
-    todos?: Todo[]
-}
 
 interface ChangeTodoStatusPayload {
     todoId: number
@@ -37,26 +32,58 @@ export interface TodoState {
     doneTodos: Todo[]
 }
 
-// create a connected version of our dumb/presentational component (binding to store will happen later at runtime)
-const mapStateToProps = (state: Todo[]) => ({ todos: state })
-const ConnectedTodoComponent = connect(TodoComponent, { mapStateToProps })
+const ConnectedTodoComponent = connect(TodoComponent, (store: Store<{ todos: Todo[] }>) => {
 
-export default class extends React.Component<TodoProps, TodoState> {
+    const cleanupSubscription = new Subscription();
+    const slice = store.createSlice("todos");
+    cleanupSubscription.add(() => store.destroy())
+
+    cleanupSubscription.add(slice.addReducer(changeTodoStatus, changeTodoStatusReducer));
+    cleanupSubscription.add(slice.addReducer(addTodo, addTodoReducer));
+
+    const actionMap = {
+        setTodoStatus: (todoId: number, status: boolean) => changeTodoStatus.next({ todoId, status })
+    };
+
+    const mapStateToProps = (state: Todo[]) => ({ todos: state })
+
+    // add some sample todos via the addTodo action if none present
+    slice.select().take(1).subscribe(state => {
+        const todolistIsEmpty = state.length === 0;
+        if (todolistIsEmpty) {
+            Observable.from(sampleTodos).subscribe(n => addTodo.next(n));
+        }
+    });
+
+    return {
+        actionMap,
+        cleanupSubscription,
+        mapStateToProps,
+        store: slice,
+    }
+});
+
+export interface TodoProps {
+    // TODO make non-nullable
+    store?: Store<any>;
+    todos?: Todo[]
+}
+
+class EnhancedTodoComponent extends React.Component<TodoProps, TodoState> {
 
     public state: TodoState = {
         openTodos: [],
         doneTodos: []
     }
 
-    private store: Store<Todo[]>
-    private actionMap: ActionMap<TodoComponentProps>
+    private store?: Store<Todo[]>
 
     private setupComputedValues() {
         // Using RxJS operators we can transform/map/accumulate values (=computed values) into
         // new Observables...
-        const openComputed = this.store.select(todos => todos)
+        const openComputed = this.store!.select(todos => todos)
             .map(todos => todos.filter(todo => todo.done === false))
-        const doneComputed = this.store.select(todos => todos)
+        const doneComputed = this.store!.select(todos => todos)
             .map(todos => todos.filter(todo => todo.done === true))
 
         // ...and use the unpackToState() helper function to unpack the observables last emitted values
@@ -67,20 +94,8 @@ export default class extends React.Component<TodoProps, TodoState> {
 
     componentWillMount() {
         this.store = this.props.store.createSlice("todos", []);
-        this.actionMap = {
-            setTodoStatus: (todoId: number, status: boolean) => changeTodoStatus.next({ todoId, status })
-        };
 
         this.setupComputedValues();
-
-        this.store.addReducer(changeTodoStatus, changeTodoStatusReducer);
-        this.store.addReducer(addTodo, addTodoReducer);
-
-        // add some sample todos via the addTodo action if none present
-        this.store.select().take(1).subscribe(todos => {
-            if (todos.length === 0)
-                Observable.from(sampleTodos).subscribe(n => addTodo.next(n));
-        })
     }
 
     componentWillUnmount() {
@@ -94,13 +109,13 @@ export default class extends React.Component<TodoProps, TodoState> {
             <div>
                 <h1>Todo</h1>
                 <div className="container">
-                    <ConnectedTodoComponent store={this.store} actionMap={this.actionMap} todos={this.props.todos} />
+                    <ConnectedTodoComponent />
                 </div>
                 <div>
                     <div className="container box">
                         Using <code>store.select()</code> and built-in RxJS operators we can create new observables to
                         create "computed" values, completely eliminating the need to use <a href="https://github.com/reactjs/reselect"
-                        target="_blank">Reselect</a> or <a href="https://github.com/mobxjs/mobx" target="_blank">MobX</a>.
+                            target="_blank">Reselect</a> or <a href="https://github.com/mobxjs/mobx" target="_blank">MobX</a>.
 
                         The auxiliary function <code>unpackToState()</code> can be used to unpack Observables into a component's own state.
 
@@ -111,3 +126,5 @@ export default class extends React.Component<TodoProps, TodoState> {
         )
     }
 }
+
+export default withStore(EnhancedTodoComponent);

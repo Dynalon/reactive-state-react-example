@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "ES5",
         "outDir": "dist",
-        "strict": true,
+        "strict": false,
         "sourceMap": true,
         "declaration": false,
         "module": "commonjs",

@@ -2,11 +2,8 @@ import * as React from "react"
 import { Action, Reducer, Store } from "reactive-state"
 import { CounterComponent, CounterComponentProps } from "./counter-component"
 
-import { connect, ActionMap } from "reactive-state/react"
-
-export interface AdvancedCounterProps {
-    store: Store<any>
-}
+import { ActionMap, connect } from "reactive-state/react"
+import { Subscription } from "rxjs";
 
 const incrementReducer: Reducer<number> = (state) => state + 1
 const decrementReducer: Reducer<number> = (state) => state - 1
@@ -17,45 +14,36 @@ const decrementReducer: Reducer<number> = (state) => state - 1
 // completely optional here and only added for documentation.
 const mapStateToProps = (state: number) => ({ counter: state } as Partial<CounterComponentProps>)
 
-const ConnectedCounterComponent = connect(CounterComponent, { mapStateToProps });
+export default connect(CounterComponent, (store: Store<any>) => {
 
-export default class extends React.Component<AdvancedCounterProps, {}> {
+    // We will use a random-generated string as key on the store; this allows us to
+    // have multiples of this component on the same page, using different state slices.
+    const randomString = `advanced-counter-${Math.floor(Math.random() * 10000000)}`
 
-    private store: Store<number>
-    private actionMap: any;
+    // The "delete" setting on the as cleanup state will remove the state property from the parent alltogether
+    // this is perfect to "leave no trace" on the state once this component is unloaded
+    const slice = store.createSlice(randomString, 0, "delete")
 
-    componentWillMount() {
-        // We will use a random-generated string as key on the store; this allows us to
-        // have multiples of this component on the same page, using different state slices.
-        const randomString = `advanced-counter-${Math.floor(Math.random() * 10000000)}`
+    const cleanupSubscription = new Subscription();
+    cleanupSubscription.add(() => slice.destroy())
 
-        // The "delete" setting on the as cleanup state will remove the state property from the parent alltogether
-        // this is perfect to "leave no trace" on the state once this component is unloaded
-        this.store = this.props.store.createSlice(randomString, 0, "delete")
+    const increment = new Action<void>()
+    const decrement = new Action<void>()
 
-        const increment = new Action<void>()
-        const decrement = new Action<void>()
+    cleanupSubscription.add(slice.addReducer(increment, incrementReducer))
+    cleanupSubscription.add(slice.addReducer(decrement, decrementReducer))
 
-        this.store.addReducer(increment, incrementReducer)
-        this.store.addReducer(decrement, decrementReducer)
-
-        // instead of functions that dispatch actions, we can just add any RxJS observer here -
-        // and since Actions and Subjects are observer, they will dispatch.
-        this.actionMap = {
-            increment,
-            decrement
-        }
+    // instead of functions that dispatch actions, we can just add any RxJS observer here -
+    // and since Actions and Subjects are observer, they will dispatch.
+    const actionMap: ActionMap<CounterComponentProps> = {
+        increment,
+        decrement
     }
 
-    componentWillUnmount() {
-        // instead of tracking every subscription and manually unsubscribing, we can simple destroy our store slice.
-        // All subscriptions to observables created via the slice's .select() method will be automatically unsubscribed
-        this.store.destroy()
+    return {
+        actionMap,
+        mapStateToProps,
+        store: slice,
+        cleanupSubscription
     }
-
-    render() {
-        return (
-            <ConnectedCounterComponent store={this.store} actionMap={this.actionMap} />
-        )
-    }
-}
+})

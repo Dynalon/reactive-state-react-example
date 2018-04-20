@@ -1,17 +1,13 @@
 import * as React from "react"
 
-import {  Observable }  from "rxjs/Observable"
+import { Observable } from "rxjs/Observable"
 import { Subscription } from "rxjs/Subscription"
 import { Subject } from "rxjs/Subject"
 
-import {  Store, Action, Reducer } from "reactive-state"
-import {  connect, ActionMap } from "reactive-state/react"
+import { Store, Action, Reducer } from "reactive-state"
+import { connect, ActionMap } from "reactive-state/react"
 
-import {  Dogs, DogsProps as DogsComponentProps } from "./dogs"
-
-export interface DogProps {
-    store: Store<any>
-}
+import { Dogs, DogsProps } from "./dogs"
 
 // AppState for our container slice
 interface DogsSlice {
@@ -19,7 +15,6 @@ interface DogsSlice {
     selectedBreed?: string
     breedSampleImageUrl?: string
 }
-
 
 const mapStateToProps = (state: DogsSlice) => {
     return {
@@ -29,17 +24,12 @@ const mapStateToProps = (state: DogsSlice) => {
     }
 }
 
-const ConnectedDogs = connect(Dogs, {  mapStateToProps });
+export default class extends React.Component<{}, {}> {
 
-export default class extends React.Component<DogProps, {}> {
-
-    store: Store<DogsSlice>
-    actionMap: ActionMap<DogsComponentProps>
+    // TODO eliminate any
+    ConnectedDogs: any;
 
     componentWillMount() {
-
-        // Note how we do not specifiy a cleanup state - this allows us to restore the breed & image when navigating away
-        this.store = this.props.store.createSlice("dogs", { breedNames: [] });
 
         // Use an observable as action to fetch a list of all available dog breeds
         const fetchBreedNames = Observable.defer(() => fetch("http://dog.ceo/api/breeds/list"))
@@ -55,27 +45,37 @@ export default class extends React.Component<DogProps, {}> {
             .switchMap(response => response.json())
             .map(body => body.message as string)
 
-        // add reducers/action pairs - note that the string names are only for debugging purposes in devtools and
-        // not required
-        this.store.addReducer(fetchBreedNames, (state, breedNames) => ({ ...state, breedNames }), "FETCH_BREED_NAMES")
-        this.store.addReducer(fetchSampleImage, (state, imageUrl) => ({ ...state, breedSampleImageUrl: imageUrl }), "FETCH_SAMPLE_IMAGE")
-        this.store.addReducer(getSampleImage, (state, breedName) => {
-            return ({ ...state, selectedBreed: breedName })
-        }, "SELECT_BREED_NAME")
+        // create a connected smart component
+        this.ConnectedDogs = connect(Dogs, (store: Store<{ dogs: DogsSlice }>) => {
 
-        // map the function callbacks from the dumb/presentational Dog component to our actions (just one in this case)
-        this.actionMap = {
-            onGetNewSampleImage: getSampleImage
-        }
-    }
+            // Note how we do not specifiy a cleanup state - this allows us to restore the breed & image when navigating away
+            const slice = store.createSlice("dogs", { breedNames: [] });
 
-    componentWillUnmount() {
-        this.store.destroy()
+            // add reducers/action pairs - note that the string names are only for debugging purposes in devtools and
+            // not required
+            slice.addReducer(fetchBreedNames, (state, breedNames) => ({ ...state, breedNames }), "FETCH_BREED_NAMES")
+            slice.addReducer(fetchSampleImage, (state, imageUrl) => ({ ...state, breedSampleImageUrl: imageUrl }), "FETCH_SAMPLE_IMAGE")
+            slice.addReducer(getSampleImage, (state, breedName) => {
+                return ({ ...state, selectedBreed: breedName })
+            }, "SELECT_BREED_NAME")
+
+            const actionMap = {
+                onGetNewSampleImage: getSampleImage
+            }
+
+            return {
+                actionMap,
+                mapStateToProps,
+                store: slice,
+            }
+        });
     }
 
     render() {
+        const ConnectedDogs = this.ConnectedDogs;
         return (
-            <ConnectedDogs store={this.store} actionMap={this.actionMap} />
+            <ConnectedDogs />
         )
     }
 }
+
