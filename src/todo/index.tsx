@@ -2,7 +2,8 @@ import * as React from "react"
 import { Action, Reducer, Store } from "reactive-state"
 import { Observable, Subscription } from "rxjs/Rx"
 
-import { connect, withStore, unpackToState, ActionMap } from "reactive-state/react"
+import {  withStore } from "reactive-state/react/connect";
+import { connect, unpackToState, ActionMap } from "reactive-state/react"
 import { Todo, TodoComponent, TodoComponentProps } from "./todo-component";
 import { TodoSummaryComponent } from "./todo-summary";
 import { sampleTodos } from "./sample-todos"
@@ -64,8 +65,7 @@ const ConnectedTodoComponent = connect(TodoComponent, (store: Store<{ todos: Tod
 });
 
 export interface TodoProps {
-    // TODO make non-nullable
-    store?: Store<any>;
+    store: Store<any>;
     todos?: Todo[]
 }
 
@@ -127,4 +127,4 @@ class EnhancedTodoComponent extends React.Component<TodoProps, TodoState> {
     }
 }
 
-export default withStore(EnhancedTodoComponent);
+export default withStore(store => <EnhancedTodoComponent store={store} />);
