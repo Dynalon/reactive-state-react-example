@@ -1,8 +1,7 @@
 import * as React from "react"
 
-import { Observable } from "rxjs/Observable"
-import { Subscription } from "rxjs/Subscription"
-import { Subject } from "rxjs/Subject"
+import { Observable, Subscription, Subject, defer } from "rxjs"
+import { switchMap, map } from "rxjs/operators"
 
 import { Store, Action, Reducer } from "reactive-state"
 import { connect, ActionMap } from "reactive-state/react"
@@ -32,18 +31,21 @@ export default class extends React.Component<{}, {}> {
     componentWillMount() {
 
         // Use an observable as action to fetch a list of all available dog breeds
-        const fetchBreedNames = Observable.defer(() => fetch("http://dog.ceo/api/breeds/list"))
-            .switchMap(response => response.json())
-            .map(body => body.message as string[])
+        const fetchBreedNames = defer(() => fetch("http://dog.ceo/api/breeds/list")).pipe(
+            switchMap(response => response.json()),
+            map(body => body.message as string[])
+        )
 
         // use a Subject as Action that will trigger fetching an example image by a given breed name
         const getSampleImage = new Subject<string>()
 
         // the actual logic that will fetch the image
-        const fetchSampleImage = getSampleImage
-            .switchMap(breedName => fetch(`http://dog.ceo/api/breed/${breedName}/images/random`))
-            .switchMap(response => response.json())
-            .map(body => body.message as string)
+        const fetchSampleImage = getSampleImage.pipe(
+            switchMap(breedName => fetch(`http://dog.ceo/api/breed/${breedName}/images/random`)),
+            switchMap(response => response.json()),
+            map(body => body.message as string)
+        )
+
 
         // create a connected smart component
         this.ConnectedDogs = connect(Dogs, (store: Store<{ dogs: DogsSlice }>) => {

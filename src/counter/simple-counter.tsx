@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Action, Reducer, Store } from "reactive-state"
-import { Subscription } from "rxjs/Subscription"
+import { Subscription } from "rxjs"
 
 import { CounterComponent, CounterComponentProps } from "./counter-component";
 import { connect, ActionMap, MapStateToProps } from "reactive-state/react"

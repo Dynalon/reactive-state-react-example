@@ -1,8 +1,9 @@
 import * as React from "react"
 import { Action, Reducer, Store } from "reactive-state"
-import { Observable, Subscription } from "rxjs/Rx"
+import { Observable, Subscription, from } from "rxjs"
+import { take, map } from "rxjs/operators"
 
-import {  withStore } from "reactive-state/react/connect";
+import { withStore } from "reactive-state/react/connect";
 import { connect, unpackToState, ActionMap } from "reactive-state/react"
 import { Todo, TodoComponent, TodoComponentProps } from "./todo-component";
 import { TodoSummaryComponent } from "./todo-summary";
@@ -49,10 +50,10 @@ const ConnectedTodoComponent = connect(TodoComponent, (store: Store<{ todos: Tod
     const mapStateToProps = (state: Todo[]) => ({ todos: state })
 
     // add some sample todos via the addTodo action if none present
-    slice.select().take(1).subscribe(state => {
+    slice.select().pipe(take(1)).subscribe(state => {
         const todolistIsEmpty = state.length === 0;
         if (todolistIsEmpty) {
-            Observable.from(sampleTodos).subscribe(n => addTodo.next(n));
+            from(sampleTodos).subscribe(n => addTodo.next(n));
         }
     });
 
@@ -81,10 +82,12 @@ class EnhancedTodoComponent extends React.Component<TodoProps, TodoState> {
     private setupComputedValues() {
         // Using RxJS operators we can transform/map/accumulate values (=computed values) into
         // new Observables...
-        const openComputed = this.store!.select(todos => todos)
-            .map(todos => todos.filter(todo => todo.done === false))
-        const doneComputed = this.store!.select(todos => todos)
-            .map(todos => todos.filter(todo => todo.done === true))
+        const openComputed = this.store!.select(todos => todos).pipe(
+            map(todos => todos.filter(todo => todo.done === false))
+        )
+        const doneComputed = this.store!.select(todos => todos).pipe(
+            map(todos => todos.filter(todo => todo.done === true))
+        )
 
         // ...and use the unpackToState() helper function to unpack the observables last emitted values
         // automatically to the components internal state
@@ -101,7 +104,7 @@ class EnhancedTodoComponent extends React.Component<TodoProps, TodoState> {
     componentWillUnmount() {
         // Important: Allways destroy a slice to make sure all subscriptions are unsubscribed.
         // This also unsubscribes any subscriptions to our computed observables doneTodos or openTodos!
-        this.store.destroy();
+        this.store!.destroy();
     }
 
     render() {
