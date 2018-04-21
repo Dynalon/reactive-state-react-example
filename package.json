@@ -27,7 +27,7 @@
     "react": "^16.3.2",
     "react-dom": "^16.0.0",
     "react-router-dom": "^4.2.2",
-    "reactive-state": "^1.0.0",
+    "reactive-state": "^2.0.0-alpha.3",
     "rxjs": "^5.5.8"
   }
 }
