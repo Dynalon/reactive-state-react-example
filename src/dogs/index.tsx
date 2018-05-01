@@ -38,8 +38,8 @@ export default connect(Dogs, (store: Store<{ dogs: DogsSlice }>) => {
     // TODO move slicing outside?
     const slice = store.createSlice("dogs", { breedNames: [] });
 
-    const cleanupSubscription = new Subscription();
-    cleanupSubscription.add(() => slice.destroy());
+    const cleanup = new Subscription();
+    cleanup.add(() => slice.destroy());
 
     // add reducers/action pairs - note that the string names are only for debugging purposes in devtools and
     // not required
@@ -66,6 +66,7 @@ export default connect(Dogs, (store: Store<{ dogs: DogsSlice }>) => {
 
     return {
         actionMap,
+        cleanup,
         mapStateToProps,
     }
 });

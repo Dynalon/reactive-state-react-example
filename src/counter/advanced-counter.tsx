@@ -19,8 +19,8 @@ export default connect(CounterComponent, (store: Store<any>) => {
     // this is perfect to "leave no trace" on the state once this component is unloaded
     const slice = store.createSlice(randomString, 0, "delete");
 
-    const cleanupSubscription = new Subscription();
-    cleanupSubscription.add(() => slice.destroy());
+    const cleanup = new Subscription();
+    cleanup.add(() => slice.destroy());
 
     const increment = new Action<void>();
     const decrement = new Action<void>();
@@ -50,6 +50,6 @@ export default connect(CounterComponent, (store: Store<any>) => {
     return {
         actionMap,
         mapStateToProps,
-        cleanupSubscription
+        cleanup
     }
 })

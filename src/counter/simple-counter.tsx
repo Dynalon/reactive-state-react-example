@@ -29,13 +29,13 @@ const mapStateToProps = (store: Store<SimpleCounterState>) => {
 }
 
 export default connect(CounterComponent, (store: Store<SimpleCounterState>) => {
-    const cleanupSubscription = new Subscription();
+    const cleanup = new Subscription();
 
     const increment = new Action<void>();
     const decrement = new Action<void>();
 
-    cleanupSubscription.add(store.addReducer(increment, incrementReducer))
-    cleanupSubscription.add(store.addReducer(decrement, decrementReducer))
+    cleanup.add(store.addReducer(increment, incrementReducer))
+    cleanup.add(store.addReducer(decrement, decrementReducer))
 
     const actionMap: ActionMap<CounterComponentProps> = {
         increment: () => increment.next(),
@@ -45,7 +45,7 @@ export default connect(CounterComponent, (store: Store<SimpleCounterState>) => {
     return {
         actionMap,
         mapStateToProps,
-        cleanupSubscription
+        cleanup
     }
 
 });
