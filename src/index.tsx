@@ -2,7 +2,7 @@ import * as React from "react";
 import { HashRouter as Router, Route, Link, Redirect } from "react-router-dom";
 import { render } from "react-dom";
 import { Store } from "reactive-state";
-import { StoreProvider } from "reactive-state/react";
+import { StoreProvider, StoreSlice } from "reactive-state/react";
 import { enableDevTool } from "reactive-state/src/devtool";
 
 import SimpleCounter, { SimpleCounterState } from "./counter/simple-counter";
@@ -45,9 +45,9 @@ export class AppRoot extends React.Component<{}, {}> {
                     <StoreProvider store={this.store}>
                         <nav>
                             <Link to="/simplecounter">Simple Counter</Link> |
-                        <Link to="/advancedcounter"> Advanced Counter</Link> |
-                        <Link to="/todos"> Todo Example</Link> |
-                        <Link to="/dogs"> Dog Breeds</Link>
+                            <Link to="/advancedcounter"> Advanced Counter</Link> |
+                            <Link to="/todos"> Todo Example</Link> |
+                            <Link to="/dogs"> Dog Breeds</Link>
                         </nav>
 
                         <Route exact path="/" render={() => (
@@ -64,7 +64,13 @@ export class AppRoot extends React.Component<{}, {}> {
                         </div>
                         )} />
 
-                        <Route exact path="/todos" render={() => (<Todo />)} />
+                        <Route exact path="/todos" render={() => {
+                            {/* store slice create a slice of the store for us */ }
+                            return <StoreSlice slice={(store: Store<any>) => "todos"} initialState={[]} cleanupState={"delete"}>
+                                <Todo />
+                            </StoreSlice>
+                        }
+                        } />
 
                         <Route exact path="/dogs" render={() => (<Dogs />)} />
 

@@ -24,12 +24,9 @@ export const CounterComponent: React.SFC<CounterComponentProps> = (props: Counte
             props.decrement();
         }
     }
-
     return (<p>
         Counter is: {props.counter} &nbsp;
         <button onClick={increment}> + </button>
         <button onClick={decrement}> - </button>
     </p>)
 }
-
-export default CounterComponent;

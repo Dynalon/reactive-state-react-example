@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Action, Reducer, Store } from "reactive-state"
 import { Subscription } from "rxjs"
+import { map } from "rxjs/operators"
 
 import { CounterComponent, CounterComponentProps } from "./counter-component";
 import { connect, ActionMap, MapStateToProps } from "reactive-state/react"
@@ -16,11 +17,15 @@ const decrementReducer: Reducer<SimpleCounterState> = (state) => ({ ...state, co
 
 // This is the exact equivalent of  "mapStateToProps" in react-redux; We get a State and pick properties which should
 // be fed as input to the component as its props
-const mapStateToProps = (state: SimpleCounterState) => {
-    return {
-        // "counter" prop on the component will be connected to the properties counter of our app state
-        counter: state.counter
-    }
+const mapStateToProps = (store: Store<SimpleCounterState>) => {
+    return store.select().pipe(
+        map(state => {
+            return {
+                // "counter" prop on the component will be connected to the properties counter of our app state
+                counter: state.counter
+            }
+        })
+    )
 }
 
 export default connect(CounterComponent, (store: Store<SimpleCounterState>) => {
@@ -40,7 +45,6 @@ export default connect(CounterComponent, (store: Store<SimpleCounterState>) => {
     return {
         actionMap,
         mapStateToProps,
-        store,
         cleanupSubscription
     }
 
