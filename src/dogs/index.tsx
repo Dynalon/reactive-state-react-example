@@ -48,7 +48,7 @@ export default connect(Dogs, (store: Store<{ dogs: DogsSlice }>) => {
     slice.addReducer(getSampleImage, (state, breedName) => ({ ...state, selectedBreed: breedName }), "SELECT_BREED_NAME")
 
     const mapStateToProps: MapStateToProps<Dogs> = () => {
-        return slice.select().pipe(
+        return slice.watch().pipe(
             filter(state => state.breedNames.length > 0),
             map(state  => {
                 return {

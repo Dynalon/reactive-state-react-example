@@ -32,10 +32,8 @@ export class AppRoot extends React.Component<{}, {}> {
 
         enableDevTool(this.store);
 
-        // We subscribe to the global store on every change, which you wouldn't usually do
-        // (hence the true flag as second argument that would most of the times be omitted)
-        // But for this demo and debugging, we want to log each and every single state change
-        this.store.select(state => state, true).subscribe(state => console.log("ROOT STATE CHANGE:", state))
+        // For this demo and debugging, we want to log each and every single state change
+        this.store.select().subscribe(state => console.log("ROOT STATE CHANGE:", state))
     }
 
     render() {

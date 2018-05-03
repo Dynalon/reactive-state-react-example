@@ -38,13 +38,13 @@ const ConnectedTodoComponent = connect(TodoComponent, (store: Store<Todo[]>) => 
     };
 
     const mapStateToProps = () => {
-        return store.select().pipe(
+        return store.watch().pipe(
             map(todos => ({ todos }))
         )
     };
 
     // add some sample todos via the addTodo action if none present
-    store.select().pipe(take(1)).subscribe(todos => {
+    store.watch().pipe(take(1)).subscribe(todos => {
         const todolistIsEmpty = todos.length === 0;
         if (todolistIsEmpty) {
             from(sampleTodos).subscribe(n => addTodo.next(n));

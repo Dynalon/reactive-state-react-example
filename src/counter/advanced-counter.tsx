@@ -33,7 +33,7 @@ export default connect(CounterComponent, (store: Store<any>) => {
     // of type Partial<CounterComponentProps>. Note that the casting of the return type with the 'as' is
     // completely optional here and only added for documentation.
     const mapStateToProps = () => {
-        return slice.select().pipe(
+        return slice.watch().pipe(
             map(counter => {
                 return ({ counter });
             })
