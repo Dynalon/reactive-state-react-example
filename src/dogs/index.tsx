@@ -34,8 +34,6 @@ const fetchSampleImage = getSampleImage.pipe(
 
 export default connect(Dogs, (store: Store<{ dogs: DogsSlice }>) => {
 
-    // Note how we do not specifiy a cleanup state - this allows us to restore the breed & image when navigating away
-    // TODO move slicing outside?
     const slice = store.createSlice("dogs", { breedNames: [] });
 
     const cleanup = new Subscription();

@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Action, Reducer, Store } from "reactive-state";
-import { CounterComponent } from "./counter-component";
+import { CounterComponent, CounterComponentProps } from "./counter-component";
 
 import { connect, ActionMap, MapStateToProps } from "reactive-state/react";
-import { Subscription } from "rxjs";
+import { Subscription, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
 const incrementReducer: Reducer<number> = (state) => state + 1;
@@ -29,19 +29,16 @@ export default connect(CounterComponent, (store: Store<any>) => {
     slice.addReducer(decrement, decrementReducer);
 
     // A function that maps our state of the slice to a matching props object of the component to connect.
-    // Since we do not need to account for all props of the component to connect, the return type must be
-    // of type Partial<CounterComponentProps>. Note that the casting of the return type with the 'as' is
-    // completely optional here and only added for documentation.
-    const mapStateToProps = () => {
+    const mapStateToProps = (): Observable<CounterComponentProps> => {
         return slice.watch().pipe(
             map(counter => {
-                return ({ counter });
+                return { counter };
             })
         )
     }
 
-    // instead of functions that dispatch actions, we can just add any RxJS observer here -
-    // and since Actions and Subjects are observer, they will dispatch.
+    // instead of functions that dispatch actions (see simple-counter), we can just add any RxJS observer
+    // here - and since Actions and Subjects are observers, they will "fire" (dispatch).
     const actionMap = {
         increment,
         decrement
@@ -50,6 +47,9 @@ export default connect(CounterComponent, (store: Store<any>) => {
     return {
         actionMap,
         mapStateToProps,
+
+        // the cleanup subscription we pass here will automatically be unsubscribed when the
+        // connected component unmounts
         cleanup
     }
 })
