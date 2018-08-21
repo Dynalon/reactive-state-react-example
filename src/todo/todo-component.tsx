@@ -10,19 +10,17 @@ export interface Todo {
 
 export interface TodoComponentProps {
     todos: Todo[],
-    setTodoStatus?: (todoId: number, status: boolean) => void
+    setTodoStatus: (todoId: number, status: boolean) => void
 }
 
 export class TodoComponent extends React.Component<TodoComponentProps, {}> {
 
-    public static defaultProps: TodoComponentProps = {
+    public static defaultProps = {
         todos: []
     }
 
     private toggleTodo = (todo: Todo) => {
-        if (this.props.setTodoStatus) {
-            this.props.setTodoStatus(todo.id, !todo.done);
-        }
+        this.props.setTodoStatus(todo.id, !todo.done);
     }
 
     render() {

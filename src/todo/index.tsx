@@ -13,7 +13,7 @@ interface ChangeTodoStatusPayload {
     status: boolean;
 }
 
-const changeTodoStatus = new Action<ChangeTodoStatusPayload>()
+const changeTodoStatus = new Action<ChangeTodoStatusPayload>("CHANGE_TODO_STATUS")
 
 // we use a single reducer for marking as done, and marking as undone
 const changeTodoStatusReducer: Reducer<Todo[], ChangeTodoStatusPayload> = (state, payload) => {
@@ -25,7 +25,7 @@ const changeTodoStatusReducer: Reducer<Todo[], ChangeTodoStatusPayload> = (state
     })
 }
 
-const addTodo = new Action<Todo>()
+const addTodo = new Action<Todo>("ADD_TODO")
 const addTodoReducer: Reducer<Todo[], Todo> = (state, todo) => [...state, todo]
 
 const ConnectedTodoComponent = connect(TodoComponent, (store: Store<Todo[]>) => {
@@ -75,9 +75,10 @@ class TodoOverview extends React.Component<TodoProps> {
                 </div>
                 <div>
                     <div className="container box">
-                        Using <code>store.select()</code> and built-in RxJS operators we can create new observables to
-                        create "computed" values, completely eliminating the need to use <a href="https://github.com/reactjs/reselect"
-                            target="_blank">Reselect</a> or <a href="https://github.com/mobxjs/mobx" target="_blank">MobX</a>.
+                        <code>store.select()</code> returns an observable of the state. Using <code>.pipe()</code> and built-in
+                        RxJS operators we can create new observables from the state to create "computed" values,
+                        completely eliminating the need to use <a href="https://github.com/reactjs/reselect" target="_blank">Reselect</a>/
+                        <a href="https://github.com/mobxjs/mobx" target="_blank">MobX</a>.
 
                         <TodoSummaryComponent open={this.props.openTodos.length} done={this.props.doneTodos.length} />
                     </div>
