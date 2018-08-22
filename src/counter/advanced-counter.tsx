@@ -1,10 +1,8 @@
-import * as React from "react";
-import { Action, Reducer, Store } from "reactive-state";
-import { CounterComponent, CounterComponentProps } from "./counter-component";
-
-import { connect, ActionMap, MapStateToProps } from "reactive-state/react";
-import { Subscription, Observable } from "rxjs";
+import { Reducer, Store } from "reactive-state";
+import { connect } from "reactive-state/react";
+import { Observable, Subject, Subscription } from "rxjs";
 import { map } from "rxjs/operators";
+import { CounterComponent, CounterComponentProps } from "./counter-component";
 
 const incrementReducer: Reducer<number> = (state) => state + 1;
 const decrementReducer: Reducer<number> = (state) => state - 1;
@@ -22,8 +20,8 @@ export default connect(CounterComponent, (store: Store<any>) => {
     const cleanup = new Subscription();
     cleanup.add(() => slice.destroy());
 
-    const increment = new Action<void>();
-    const decrement = new Action<void>();
+    const increment = new Subject<void>();
+    const decrement = new Subject<void>();
 
     slice.addReducer(increment, incrementReducer);
     slice.addReducer(decrement, decrementReducer);

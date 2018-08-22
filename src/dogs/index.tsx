@@ -1,12 +1,8 @@
-import * as React from "react"
-
-import { Observable, Subscription, Subject, defer, AsyncSubject } from "rxjs"
-import { switchMap, map, take, filter} from "rxjs/operators"
-
-import { Store, Action, Reducer } from "reactive-state"
-import { connect, ActionMap, MapStateToProps } from "reactive-state/react"
-
-import { Dogs, DogsProps } from "./dogs"
+import { Store } from "reactive-state";
+import { ActionMap, connect, MapStateToProps } from "reactive-state/react";
+import { defer, Subject, Subscription } from "rxjs";
+import { filter, map, switchMap } from "rxjs/operators";
+import { Dogs } from "./dogs";
 
 // AppState for our container slice
 interface DogsSlice {
@@ -21,16 +17,15 @@ const fetchBreedNames = defer(() => fetch("https://dog.ceo/api/breeds/list")).pi
     map(body => body.message as string[]),
 )
 
-// use a Subject as Action that will trigger fetching an example image by a given breed name
-const getSampleImage = new Subject<string>()
+// use a Subject that will trigger fetching an example image by a given breed name
+const getSampleImage = new Subject<string>();
 
-// the actual logic that will fetch the image
+// the actual logic that will fetch the image when the action is dispatched
 const fetchSampleImage = getSampleImage.pipe(
     switchMap(breedName => fetch(`https://dog.ceo/api/breed/${breedName}/images/random`)),
     switchMap(response => response.json()),
     map(body => body.message as string)
 )
-
 
 export default connect(Dogs, (store: Store<{ dogs: DogsSlice }>) => {
 

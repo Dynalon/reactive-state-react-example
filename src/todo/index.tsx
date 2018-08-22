@@ -1,19 +1,19 @@
-import * as React from "react"
-import { Action, Reducer, Store } from "reactive-state"
-import { Observable, Subscription, from, zip } from "rxjs"
-import { take, map } from "rxjs/operators"
-
-import { connect, ActionMap, WithStore } from "reactive-state/react"
-import { Todo, TodoComponent, TodoComponentProps } from "./todo-component";
+import * as React from "react";
+import { Reducer, Store } from "reactive-state";
+import { connect } from "reactive-state/react";
+import { from, zip, Subject } from "rxjs";
+import { map, take } from "rxjs/operators";
+import { sampleTodos } from "./sample-todos";
+import { Todo, TodoComponent } from "./todo-component";
 import { TodoSummaryComponent } from "./todo-summary";
-import { sampleTodos } from "./sample-todos"
+
 
 interface ChangeTodoStatusPayload {
     todoId: number
     status: boolean;
 }
 
-const changeTodoStatus = new Action<ChangeTodoStatusPayload>("CHANGE_TODO_STATUS")
+const changeTodoStatus = new Subject<ChangeTodoStatusPayload>()
 
 // we use a single reducer for marking as done, and marking as undone
 const changeTodoStatusReducer: Reducer<Todo[], ChangeTodoStatusPayload> = (state, payload) => {
@@ -25,13 +25,14 @@ const changeTodoStatusReducer: Reducer<Todo[], ChangeTodoStatusPayload> = (state
     })
 }
 
-const addTodo = new Action<Todo>("ADD_TODO")
+const addTodo = new Subject<Todo>()
 const addTodoReducer: Reducer<Todo[], Todo> = (state, todo) => [...state, todo]
 
 const ConnectedTodoComponent = connect(TodoComponent, (store: Store<Todo[]>) => {
 
-    store.addReducer(changeTodoStatus, changeTodoStatusReducer);
-    store.addReducer(addTodo, addTodoReducer);
+    // the strings are just for debugging/devtool and completely optional
+    store.addReducer(changeTodoStatus, changeTodoStatusReducer, "CHANGE_TODO_STATUS");
+    store.addReducer(addTodo, addTodoReducer, "ADD_TODO");
 
     const actionMap = {
         setTodoStatus: (todoId: number, status: boolean) => changeTodoStatus.next({ todoId, status })
