@@ -38,11 +38,8 @@ const ConnectedTodoComponent = connect(TodoComponent, (store: Store<Todo[]>) => 
         setTodoStatus: (todoId: number, status: boolean) => changeTodoStatus.next({ todoId, status })
     };
 
-    const mapStateToProps = () => {
-        return store.watch().pipe(
-            map(todos => ({ todos }))
-        )
-    };
+    // the input props to our connected component, derived from the state observable
+    const props = store.watch(todos => ({ todos }));
 
     // add some sample todos via the addTodo action if none present
     store.watch().pipe(take(1)).subscribe(todos => {
@@ -54,12 +51,11 @@ const ConnectedTodoComponent = connect(TodoComponent, (store: Store<Todo[]>) => 
 
     return {
         actionMap,
-        mapStateToProps,
+        props
     }
 });
 
 export interface TodoProps {
-    store: Store<any>;
     todos?: Todo[],
     openTodos: Todo[];
     doneTodos: Todo[];
@@ -94,13 +90,11 @@ export default connect(TodoOverview, (store: Store<Todo[]>) => {
     const openTodos = store.select().pipe(map(todos => todos.filter(todo => todo.done === false)))
     const doneTodos = store.select().pipe(map(todos => todos.filter(todo => todo.done === true)))
 
-    const mapStateToProps = () => {
-        return zip(openTodos, doneTodos).pipe(
-            map(([openTodos, doneTodos]) => ({ openTodos, doneTodos }))
-        )
-    }
+    const props = zip(openTodos, doneTodos).pipe(
+        map(([openTodos, doneTodos]) => ({ openTodos, doneTodos }))
+    )
 
     return {
-        mapStateToProps
+        props
     }
 });

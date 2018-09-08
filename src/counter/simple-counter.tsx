@@ -12,21 +12,9 @@ export interface SimpleCounterState {
 const incrementReducer: Reducer<SimpleCounterState> = (state) => ({ ...state, counter: state.counter + 1 })
 const decrementReducer: Reducer<SimpleCounterState> = (state) => ({ ...state, counter: state.counter - 1 })
 
-// This is the exact equivalent of  "mapStateToProps" in react-redux; We get a State and pick properties
-// which should be fed as input to the component as its props. Difference is, that we return an observable
-// of input props there (which is derived from the state).
-const mapStateToProps = (store: Store<SimpleCounterState>): Observable<CounterComponentProps> => {
-    return store.watch().pipe(
-        map(state => {
-            return {
-                // "counter" prop on the component will be connected to the properties counter of our app state
-                counter: state.counter
-            }
-        })
-    )
-}
-
 export default connect(CounterComponent, (store: Store<SimpleCounterState>) => {
+
+
     const cleanup = new Subscription();
 
     const increment = new Subject<void>();
@@ -35,6 +23,15 @@ export default connect(CounterComponent, (store: Store<SimpleCounterState>) => {
     cleanup.add(store.addReducer(increment, incrementReducer))
     cleanup.add(store.addReducer(decrement, decrementReducer))
 
+    // This is the equivalent of  "mapStateToProps" in react-redux; We use the state observable to derive the input
+    // propds that we connect to our component
+    const props = store.watch(state => {
+        return {
+            // "counter" prop on the component will be connected to the property counter of our app state
+            counter: state.counter
+        }
+    })
+
     const actionMap: ActionMap<CounterComponentProps> = {
         increment: () => increment.next(),
         decrement: () => decrement.next()
@@ -42,7 +39,7 @@ export default connect(CounterComponent, (store: Store<SimpleCounterState>) => {
 
     return {
         actionMap,
-        mapStateToProps,
+        props,
 
         // cleanup Subscription will be auto-unsubscribed when the component unmounts
         cleanup

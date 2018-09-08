@@ -26,17 +26,11 @@ export default connect(CounterComponent, (store: Store<any>) => {
     slice.addReducer(increment, incrementReducer);
     slice.addReducer(decrement, decrementReducer);
 
-    // A function that maps our state of the slice to a matching props object of the component to connect.
-    const mapStateToProps = (): Observable<CounterComponentProps> => {
-        return slice.watch().pipe(
-            map(counter => {
-                return { counter };
-            })
-        )
-    }
+    // An observable of the input props connected to the component. We derive the props from the state observable
+    const props = slice.watch(counter => ({ counter }))
 
     // instead of functions that dispatch actions (see simple-counter), we can just add any RxJS observer
-    // here - and since Actions and Subjects are observers, they will "fire" (dispatch).
+    // here - and since Subjects are observers, they will "fire" (dispatch).
     const actionMap = {
         increment,
         decrement
@@ -44,7 +38,7 @@ export default connect(CounterComponent, (store: Store<any>) => {
 
     return {
         actionMap,
-        mapStateToProps,
+        props,
 
         // the cleanup subscription we pass here will automatically be unsubscribed when the
         // connected component unmounts
