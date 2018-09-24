@@ -17,8 +17,10 @@ export default connect(CounterComponent, (store: Store<any>) => {
     // this is perfect to "leave no trace" on the state once this component is unloaded
     const slice = store.createSlice(randomString, 0, "delete");
 
-    const cleanup = new Subscription();
-    cleanup.add(() => slice.destroy());
+    // the store we got as 1st argument is a clone and automatically destryoed when the
+    // connected component gets unmounted. We create a slice here, which is also destroyed
+    // since its a child store of the destroyed instance. To verify, we log it to the devtools :)
+    slice.destroyed.subscribe(() => console.info("slice store for advanced counter got destroyed, all reducers on this slice removed"))
 
     const increment = new Subject<void>();
     const decrement = new Subject<void>();
@@ -39,9 +41,5 @@ export default connect(CounterComponent, (store: Store<any>) => {
     return {
         actionMap,
         props,
-
-        // the cleanup subscription we pass here will automatically be unsubscribed when the
-        // connected component unmounts
-        cleanup
     }
 })

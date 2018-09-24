@@ -1,12 +1,11 @@
 import * as React from "react";
 import { Reducer, Store } from "reactive-state";
 import { connect } from "reactive-state/react";
-import { from, zip, Subject } from "rxjs";
+import { from, Subject, zip } from "rxjs";
 import { map, take } from "rxjs/operators";
 import { sampleTodos } from "./sample-todos";
 import { Todo, TodoComponent } from "./todo-component";
 import { TodoSummaryComponent } from "./todo-summary";
-
 
 interface ChangeTodoStatusPayload {
     todoId: number
@@ -72,7 +71,7 @@ class TodoOverview extends React.Component<TodoProps> {
                 </div>
                 <div>
                     <div className="container box">
-                        <code>store.select()</code> returns an observable of the state. Using <code>.pipe()</code> and built-in
+                        <code>store.watch()</code> returns an observable of the state. Using <code>.pipe()</code> and built-in
                         RxJS operators we can create new observables from the state to create "computed" values,
                         completely eliminating the need to use <a href="https://github.com/reactjs/reselect" target="_blank">Reselect</a>/
                         <a href="https://github.com/mobxjs/mobx" target="_blank">MobX</a>.
@@ -87,8 +86,8 @@ class TodoOverview extends React.Component<TodoProps> {
 
 export default connect(TodoOverview, (store: Store<Todo[]>) => {
     // we use RxJS pipe and map to create selectors
-    const openTodos = store.select().pipe(map(todos => todos.filter(todo => todo.done === false)))
-    const doneTodos = store.select().pipe(map(todos => todos.filter(todo => todo.done === true)))
+    const openTodos = store.watch().pipe(map(todos => todos.filter(todo => todo.done === false)))
+    const doneTodos = store.watch().pipe(map(todos => todos.filter(todo => todo.done === true)))
 
     const props = zip(openTodos, doneTodos).pipe(
         map(([openTodos, doneTodos]) => ({ openTodos, doneTodos }))

@@ -1,7 +1,6 @@
 import { Reducer, Store } from "reactive-state";
 import { ActionMap, connect } from "reactive-state/react";
-import { Observable, Subject, Subscription } from "rxjs";
-import { map } from "rxjs/operators";
+import { Subject } from "rxjs";
 import { CounterComponent, CounterComponentProps } from "./counter-component";
 
 export interface SimpleCounterState {
@@ -14,14 +13,12 @@ const decrementReducer: Reducer<SimpleCounterState> = (state) => ({ ...state, co
 
 export default connect(CounterComponent, (store: Store<SimpleCounterState>) => {
 
-
-    const cleanup = new Subscription();
-
     const increment = new Subject<void>();
     const decrement = new Subject<void>();
 
-    cleanup.add(store.addReducer(increment, incrementReducer))
-    cleanup.add(store.addReducer(decrement, decrementReducer))
+    store.addReducer(increment, incrementReducer)
+    store.addReducer(decrement, decrementReducer)
+
 
     // This is the equivalent of  "mapStateToProps" in react-redux; We use the state observable to derive the input
     // propds that we connect to our component
@@ -40,9 +37,6 @@ export default connect(CounterComponent, (store: Store<SimpleCounterState>) => {
     return {
         actionMap,
         props,
-
-        // cleanup Subscription will be auto-unsubscribed when the component unmounts
-        cleanup
     }
 
 });
