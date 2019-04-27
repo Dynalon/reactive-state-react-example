@@ -3243,10 +3243,10 @@ react@^16.8.5:
     prop-types "^15.6.2"
     scheduler "^0.13.5"
 
-reactive-state@^3.3.0-beta.0:
-  version "3.3.0-beta.0"
-  resolved "https://registry.yarnpkg.com/reactive-state/-/reactive-state-3.3.0-beta.0.tgz#3d90d4ad3aec9970180bcc4567c4b2edc933d9d2"
-  integrity sha512-WwwmpMmawBxyqCkknURVt9u9Nxr2oqksprGSdmzK4jS9blFxYLxSi3q3EAceDyKxpuSt+r4I/dvwXu4VkOfn4Q==
+reactive-state@3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/reactive-state/-/reactive-state-3.3.1.tgz#6450f85ef3e54a3908c55db58ffd00403646ed92"
+  integrity sha512-K+5svj4gM2W3J7gPdvyw4N6zACTb4R39N5jmAih6eofaL44sjSmU6bp0U74lR/X+wO/HrpRf9DZQc44vrZjqpw==
   dependencies:
     lodash.isobject "^3.0.2"
     lodash.isplainobject "^4.0.6"
