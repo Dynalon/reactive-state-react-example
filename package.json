@@ -32,6 +32,6 @@
     "react-router-dom": "^4.3.1",
     "reactive-state": "^3.2.1",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^6.4.0"
+    "rxjs": "6.3.2"
   }
 }
