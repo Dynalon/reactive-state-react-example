@@ -22,18 +22,16 @@ const initialAppState = Object.assign(
 
 // Main App entry point
 export class AppRoot extends React.Component<{}, {}> {
-
     // The root store. Note that even if we work with "slices" in reactive-state, there is only a
     // single store throughout the application just as in Redux.
     // By using typeof initialAppState as a type, we make sure the type matches the initialState instance above
-    store: Store<typeof initialAppState> = Store.create(initialAppState)
+    store: Store<typeof initialAppState> = Store.create(initialAppState);
 
     componentWillMount() {
-
         enableDevTool(this.store);
 
         // For this demo and debugging, we want to log each and every single state change
-        this.store.select().subscribe(state => console.log("ROOT STATE CHANGE:", state))
+        this.store.select().subscribe(state => console.log("ROOT STATE CHANGE:", state));
     }
 
     render() {
@@ -42,50 +40,66 @@ export class AppRoot extends React.Component<{}, {}> {
                 <div>
                     <StoreProvider store={this.store}>
                         <nav>
-                            <Link to="/simplecounter">Simple Counter</Link> |
-                            <Link to="/advancedcounter"> Advanced Counter</Link> |
-                            <Link to="/todos"> Todo Example</Link> |
+                            <Link to="/simplecounter">Simple Counter</Link>
+                            <Link to="/advancedcounter"> Advanced Counter</Link>
+                            <Link to="/todos"> Todo Example</Link>
                             <Link to="/dogs"> Dog Breeds</Link>
                         </nav>
 
-                        <Route exact path="/" render={() => (
-                            <Redirect to="/simplecounter" />
-                        )} />
+                        <Route exact path="/" render={() => <Redirect to="/simplecounter" />} />
 
-                        <Route exact path="/simplecounter" render={() => (<SimpleCounter />)} />
+                        <Route exact path="/simplecounter" render={() => <SimpleCounter />} />
 
-                        <Route exact path="/advancedcounter" render={() => (<div>
-                            <h1>Advanced Counter</h1>
-                            <AdvancedCounter />
-                            <AdvancedCounter />
-                            <AdvancedCounter />
+                        <Route
+                            exact
+                            path="/advancedcounter"
+                            render={() => (
+                                <div>
+                                    <h1>Advanced Counter</h1>
+                                    <AdvancedCounter />
+                                    <AdvancedCounter />
+                                    <AdvancedCounter />
+                                </div>
+                            )}
+                        />
+
+                        <Route
+                            exact
+                            path="/todos"
+                            render={() => {
+                                {
+                                    /* store slice create a slice of the store for us */
+                                }
+                                return (
+                                    <StoreSlice
+                                        slice={(store: Store<any>) => "todos"}
+                                        initialState={[]}
+                                        cleanupState={"delete"}
+                                    >
+                                        <Todo />
+                                    </StoreSlice>
+                                );
+                            }}
+                        />
+
+                        <Route exact path="/dogs" render={() => <Dogs />} />
+
+                        <div style={{ fontSize: "smaller" }}>
+                            (if you have the{" "}
+                            <a target="_new" href="https://github.com/facebook/react-devtools">
+                                Redux Devtool Browser Extension
+                            </a>{" "}
+                            installed, you can use it with this app)
                         </div>
-                        )} />
-
-                        <Route exact path="/todos" render={() => {
-                            {/* store slice create a slice of the store for us */ }
-                            return <StoreSlice slice={(store: Store<any>) => "todos"} initialState={[]} cleanupState={"delete"}>
-                                <Todo />
-                            </StoreSlice>
-                        }
-                        } />
-
-                        <Route exact path="/dogs" render={() => (<Dogs />)} />
-
-                        <div style={{ "fontSize": "smaller" }}>
-                            (if you have the <a target="_new" href="https://github.com/facebook/react-devtools">
-                                Redux Devtool Browser Extension</a> installed, you can use it with this app)
-                    </div>
-
-                    </StoreProvider >
+                    </StoreProvider>
                 </div>
             </Router>
-        )
+        );
     }
 }
 
 // Bootstrap the App when the DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
-    const rootNode = document.getElementById("root")
-    render(<AppRoot />, rootNode)
-})
+    const rootNode = document.getElementById("root");
+    render(<AppRoot />, rootNode);
+});

@@ -7,8 +7,11 @@ export interface TodoSummaryComponentProps {
     done: number;
 }
 
-export const TodoSummaryComponent: React.StatelessComponent<TodoSummaryComponentProps> = (props) => {
-    return <div>
-        <br />#open {props.open} | #done {props.done}
-    </div>
-}
+export const TodoSummaryComponent: React.StatelessComponent<TodoSummaryComponentProps> = props => {
+    return (
+        <div>
+            <br />
+            #open {props.open} | #done {props.done}
+        </div>
+    );
+};

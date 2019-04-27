@@ -1,19 +1,17 @@
 {
     "compilerOptions": {
-        "target": "ES5",
+        "target": "ES2015",
         "outDir": "dist",
         "strict": true,
         "sourceMap": true,
         "declaration": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "module": "commonjs",
         "jsx": "react",
-        "lib": [ "dom", "es5", "es2015.promise", "es2015.core" ]
+        "lib": ["dom", "es2015"],
+        "types": ["reflect-metadata"]
     },
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.tsx"
-    ],
-    "exclude": [
-        "test/"
-    ]
+    "include": ["src/index.tsx", "src/decotests.tsx"],
+    "exclude": ["test/"]
 }

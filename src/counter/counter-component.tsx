@@ -12,7 +12,6 @@ export interface CounterComponentProps {
  * and to trigger events via functions on its component props.
  */
 export const CounterComponent: React.SFC<CounterComponentProps> = (props: CounterComponentProps) => {
-
     function increment() {
         if (props.increment) {
             props.increment();
@@ -24,9 +23,11 @@ export const CounterComponent: React.SFC<CounterComponentProps> = (props: Counte
             props.decrement();
         }
     }
-    return (<p>
-        Counter is: {props.counter} &nbsp;
-        <button onClick={increment}> + </button>
-        <button onClick={decrement}> - </button>
-    </p>)
-}
+    return (
+        <p>
+            Counter is: {props.counter} &nbsp;
+            <button onClick={increment}> + </button>
+            <button onClick={decrement}> - </button>
+        </p>
+    );
+};
