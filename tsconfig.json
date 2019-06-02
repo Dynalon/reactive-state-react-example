@@ -10,7 +10,7 @@
         "module": "commonjs",
         "jsx": "react",
         "lib": ["dom", "es2015"],
-        "types": ["reflect-metadata"]
+        "types": []
     },
     "include": ["src/index.tsx", "src/decotests.tsx"],
     "exclude": ["test/"]
