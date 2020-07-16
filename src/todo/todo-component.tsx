@@ -13,25 +13,26 @@ export interface TodoComponentProps {
     setTodoStatus: (todoId: number, status: boolean) => void;
 }
 
-export class TodoComponent extends React.Component<TodoComponentProps, {}> {
-    public static defaultProps = {
-        todos: [],
-    };
+export const TodoComponent: React.FC<TodoComponentProps> = (props) => {
+    const toggleTodo = React.useCallback(
+        (todo: Todo) => {
+            props.setTodoStatus(todo.id, !todo.done);
+        },
+        [props.setTodoStatus],
+    );
 
-    private toggleTodo = (todo: Todo) => {
-        this.props.setTodoStatus(todo.id, !todo.done);
-    };
+    return (
+        <div className="link">
+            {props.todos.map((todo) => (
+                <div key={todo.id} onClick={() => toggleTodo(todo)}>
+                    <input type="checkbox" checked={todo.done} onChange={() => undefined} />
+                    <span style={{ textDecoration: todo.done ? "line-through" : "none" }}> {todo.title}</span>
+                </div>
+            ))}
+        </div>
+    );
+};
 
-    render() {
-        return (
-            <div className="link">
-                {this.props.todos.map((todo) => (
-                    <div key={todo.id} onClick={() => this.toggleTodo(todo)}>
-                        <input type="checkbox" checked={todo.done} onChange={() => undefined} />
-                        <span style={{ textDecoration: todo.done ? "line-through" : "none" }}> {todo.title}</span>
-                    </div>
-                ))}
-            </div>
-        );
-    }
-}
+TodoComponent.defaultProps = {
+    todos: [],
+};

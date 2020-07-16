@@ -60,34 +60,32 @@ export interface TodoProps {
     doneTodos: Todo[];
 }
 
-class TodoOverview extends React.Component<TodoProps> {
-    render() {
-        return (
+const TodoOverview: React.FC<TodoProps> = (props) => {
+    return (
+        <div>
+            <h1>Todo</h1>
+            <div className="container">
+                <ConnectedTodoComponent />
+            </div>
             <div>
-                <h1>Todo</h1>
-                <div className="container">
-                    <ConnectedTodoComponent />
-                </div>
-                <div>
-                    <div className="container box">
-                        <code>store.watch()</code> returns an observable of the state. Using <code>.pipe()</code> and
-                        built-in RxJS operators we can create new observables from the state to create "computed"
-                        values, completely eliminating the need to use{" "}
-                        <a href="https://github.com/reactjs/reselect" target="_blank">
-                            Reselect
-                        </a>
-                        /
-                        <a href="https://github.com/mobxjs/mobx" target="_blank">
-                            MobX
-                        </a>
-                        .
-                        <TodoSummaryComponent open={this.props.openTodos.length} done={this.props.doneTodos.length} />
-                    </div>
+                <div className="container box">
+                    <code>store.watch()</code> returns an observable of the state. Using <code>.pipe()</code> and
+                    built-in RxJS operators we can create new observables from the state to create "computed" values,
+                    completely eliminating the need to use{" "}
+                    <a href="https://github.com/reactjs/reselect" target="_blank">
+                        Reselect
+                    </a>
+                    /
+                    <a href="https://github.com/mobxjs/mobx" target="_blank">
+                        MobX
+                    </a>
+                    .
+                    <TodoSummaryComponent open={props.openTodos.length} done={props.doneTodos.length} />
                 </div>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
 export default connect(TodoOverview, (store: Store<Todo[]>) => {
     // we use RxJS pipe and map to create selectors
