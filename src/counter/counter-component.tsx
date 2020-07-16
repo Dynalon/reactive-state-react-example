@@ -1,9 +1,9 @@
 import * as React from "react";
 
 export interface CounterComponentProps {
-    counter?: number;
-    increment?: () => void;
-    decrement?: () => void;
+    counter: number;
+    increment: () => void;
+    decrement: () => void;
 }
 
 /**
@@ -11,23 +11,12 @@ export interface CounterComponentProps {
  * anything about stores, reactive-state, actions etc. It is just a component using its props to display data,
  * and to trigger events via functions on its component props.
  */
-export const CounterComponent: React.SFC<CounterComponentProps> = (props: CounterComponentProps) => {
-    function increment() {
-        if (props.increment) {
-            props.increment();
-        }
-    }
-
-    function decrement() {
-        if (props.decrement) {
-            props.decrement();
-        }
-    }
+export const CounterComponent: React.FC<CounterComponentProps> = (props) => {
     return (
         <p>
             Counter is: {props.counter} &nbsp;
-            <button onClick={increment}> + </button>
-            <button onClick={decrement}> - </button>
+            <button onClick={props.increment}> + </button>
+            <button onClick={props.decrement}> - </button>
         </p>
     );
 };

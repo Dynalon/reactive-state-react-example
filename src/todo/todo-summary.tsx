@@ -7,7 +7,7 @@ export interface TodoSummaryComponentProps {
     done: number;
 }
 
-export const TodoSummaryComponent: React.StatelessComponent<TodoSummaryComponentProps> = props => {
+export const TodoSummaryComponent: React.StatelessComponent<TodoSummaryComponentProps> = (props) => {
     return (
         <div>
             <br />
